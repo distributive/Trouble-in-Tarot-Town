@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Trouble in Tarot Town</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="static/css/main.css" />
+
+		<!-- Favicons -->
+		<link rel="apple-touch-icon" sizes="180x180" href="static/favicon/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="static/favicon/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="static/favicon/favicon-16x16.png">
+		<link rel="manifest" href="static/favicon/site.webmanifest">
+		<link rel="mask-icon" href="static/favicon/safari-pinned-tab.svg" color="#5bbad5">
+		<meta name="msapplication-TileColor" content="#da532c">
+		<meta name="theme-color" content="#ffffff">
+
+        <!-- Google fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Aclonica&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Julius+Sans+One&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Acme&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Wendy+One&display=swap" rel="stylesheet">
+
+		<!-- jQuery -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+		<!-- Local scripts -->
+		<script src="static/script/main.js"></script>
+		<script src="static/script/hand.js"></script>
+		<script src="static/script/card.js"></script>
+		<script src="static/script/text.js"></script>
+		<script src="static/script/players.js"></script>
+		<script src="static/script/announcements.js"></script>
+		<script src="static/script/icon.js"></script>
+		<script src="static/script/messages.js"></script>
+
+		<!-- Socket scripts -->
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="static/script/sockets.js"></script>
+	</head>
+
+	<body>
+		<div id="dimmer"></div>
+		<div id="toolbar">
+			<div id="toolbar-box">
+				<div id="no-target" class="button inactive">
+					<p>Play card with no target</p>
+				</div>
+	        </div>
+        </div>
+		<div id="icon">
+			<img draggable="false" />
+		</div>
+		<div id="players">
+		</div>
+		<div id="player-info">
+			<div id="player-info-box">
+				<div id="player-name"></div>
+				<div id="player-count"></div>
+			</div>
+		</div>
+		<div id="countdown">
+			<p></p>
+		</div>
+		<div id="messages">
+			<div id="message-box">
+			</div>
+		</div>
+		<div id="join-menu">
+			<div id="join-menu-box">
+				<div id="title">
+					<h1>TROUBLE IN TAROT TOWN</h1>
+				</div>
+				<img src="static/img/logo.png" draggable="false" />
+				<form>
+					<input type="text" placeholder="Enter nickname..." maxlength="20" name="nickname"><!--
+					--><input type="submit" value="Enter lobby">
+				</form>
+			</div>
+		</div>
+		<div id="announcements">
+			<noscript id="javascript-disabled">
+				<div class="box">
+					<h6>JavaScript Disabled</h6>
+					<p>JavaScript must be enabled to use this web app.</p>
+				</div>
+			</noscript>
+			<div id="already-connected">
+				<div class="box">
+					<h6>Already Connected</h6>
+					<p>You are already connected to this server. Please close this tab, or close all other tabs already running the game and refresh this page.</p>
+				</div>
+			</div>
+			<div id="turn-counter">
+				<img src="static/img/turnCounter.png" alt="" draggable="false" />
+				<p>Turn 1</p>
+			</div>
+			<div id="killed">
+				<div class="box">
+					<h6>Dead</h6>
+					<img src="static/img/iconDead.png" draggable="false" />
+					<p>You have been killed. Do not continue to communicate with any other players, living or dead.</p>
+					<p>While you are dead, you can only draw and play DEAD cards. These inform other players of your demise.</p>
+					<p>Click anywhere to resume.</p>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
