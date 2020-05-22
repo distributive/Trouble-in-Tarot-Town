@@ -12,8 +12,35 @@ let game = require ("./game.js");
 let util = require ("./util.js");
 
 
+
+// Command line arguments
+let args = process.argv.slice (2);
+
+
+
 // Set port to listen to
-let port = 42069;
+let port;
+if (args[0])
+    port = args[0];
+else
+    port = 8080;
+
+
+
+// Set number of bots
+let botCount = Math.min (2, args[1]);
+let BOT_NAMES = ["Alice", "Bob", "Charlie", "Dan", "Erin", "Frank", "Grace", "Heidi"];
+
+if (botCount > 0)
+{
+    console.log (`Adding ${botCount} bots to the game.`);
+
+    for (let i = 0; i < botCount; i++)
+    {
+        game.addUser (i+"", null);
+        game.addPlayer (i+"", BOT_NAMES[i]);
+    }
+}
 
 
 
@@ -22,28 +49,6 @@ const MINIMUM_PLAYER_COUNT = 3;
 const TURN_TIME_LIMIT = 60;
 const PRE_GAME_TIME = 5;
 const POST_GAME_TIME = 20;
-
-
-
-// Static path
-app.use ("*/static", express.static (__dirname + "/static"));
-
-game.addUser ("a", null);
-game.addUser ("b", null);
-// game.addUser ("c", null);
-// game.addUser ("d", null);
-// game.addUser ("e", null);
-// game.addUser ("f", null);
-// game.addUser ("g", null);
-// game.addUser ("h", null);
-game.addPlayer ("a", "Alice");
-game.addPlayer ("b", "Bob");
-// game.addPlayer ("c", "Charlie");
-// game.addPlayer ("d", "Dan");
-// game.addPlayer ("e", "Erin");
-// game.addPlayer ("f", "Frank");
-// game.addPlayer ("g", "Grace");
-// game.addPlayer ("h", "Heidi");
 
 
 
@@ -325,6 +330,11 @@ function runTurn ()
         }
     }, 1000);
 }
+
+
+
+// Static path
+app.use ("*/static", express.static (__dirname + "/static"));
 
 
 
