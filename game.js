@@ -355,6 +355,7 @@ function startGame ()
 {
     gameRunning = true;
     turn = 0;
+    resetPlayers ();
 
     let traitorFraction = 0.3;
     let detectiveFraction = 0.1777778;
