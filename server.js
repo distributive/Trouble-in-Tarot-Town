@@ -28,8 +28,8 @@ else
 
 
 // Set number of bots
-let botCount = Math.min (2, args[1]);
 let BOT_NAMES = ["Alice", "Bob", "Charlie", "Dan", "Erin", "Frank", "Grace", "Heidi"];
+let botCount = Math.min (BOT_NAMES.length, args[1]);
 
 if (botCount > 0)
 {
