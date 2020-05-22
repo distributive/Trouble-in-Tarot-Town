@@ -21,8 +21,8 @@
 
     --announcement-border: #2a2732;
     --announcement-bg: #1e192b;
-    --announcement-header: #6a6479;
-    --announcement-body: #5d586b;
+    --announcement-header: #aaa4b9;
+    --announcement-body: #8a8499;
 
     --button: #4c475a;
     --button-hover: #6a6479;
@@ -46,8 +46,8 @@
     --messages-bg: #1e192b;
     --message-bg: #160f26;
     --message-bg-alt: #1a132a;
-    --message-sender: #aba7b4;
-    --message-content: #6a6379;
+    --message-sender: #cbc7e4;
+    --message-content: #8a8499;
 }
 /* CUSTOM VARIABLES END */
 
