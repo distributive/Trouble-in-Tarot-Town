@@ -1,3 +1,4 @@
+let util = require ("./util.js");
 
 function Card (title, description, targetted)
 {
@@ -103,46 +104,46 @@ const cardNull = new Card (nullTitle, nullDescription, null);
 
 function generateRoleDeck (innocentCount, traitorCount, detectiveCount)
 {
-    let roleDeck = [].concat (
+    let roleDeck = util.shuffle ([].concat (
         Array (innocentCount).fill ().map (_ => cardInnocent),
         Array (traitorCount).fill ().map (_ => cardTraitor),
         Array (detectiveCount).fill ().map (_ => cardDetective)
-    );
+    ));
 
     return roleDeck;
 }
 
 function generateInnocentDeck (innocentCount)
 {
-    let deck = [].concat (
+    let deck = util.shuffle ([].concat (
         Array (9 * innocentCount).fill ().map (_ => cardWitness),
         Array (4 * innocentCount).fill ().map (_ => cardKill)
-    );
+    ));
 
     return deck;
 }
 
 function generateTraitorDeck (traitorCount)
 {
-    let deck = [].concat (
+    let deck = util.shuffle ([].concat (
         Array (4 * traitorCount).fill ().map (_ => cardWitness),
         Array (4 * traitorCount).fill ().map (_ => cardKill),
         Array (2 * traitorCount).fill ().map (_ => cardTamper),
         Array (2 * traitorCount).fill ().map (_ => cardC4),
         Array (    traitorCount).fill ().map (_ => cardPlayDead)
-    );
+    ));
 
     return deck;
 }
 
 function generateDetectiveDeck (detectiveCount)
 {
-    let deck = [].concat (
+    let deck = util.shuffle ([].concat (
         Array (5 * detectiveCount).fill ().map (_ => cardWitness),
         Array (4 * detectiveCount).fill ().map (_ => cardKill),
         Array (3 * detectiveCount).fill ().map (_ => cardInspect),
         Array (    detectiveCount).fill ().map (_ => cardJail)
-    );
+    ));
 
     return deck;
 }

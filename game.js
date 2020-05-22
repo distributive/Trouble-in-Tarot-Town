@@ -364,10 +364,10 @@ function startGame ()
     let detectiveCount = Math.floor (detectiveFraction * playerAddresses.length);
     let innocentCount = Math.max (0, playerAddresses.length - traitorCount - detectiveCount);
 
-    let roleDeck = util.shuffle (cards.generateRoleDeck (innocentCount, traitorCount, detectiveCount));
-    innocentDeck = util.shuffle (cards.generateInnocentDeck (innocentCount));
-    traitorDeck = util.shuffle (cards.generateTraitorDeck (traitorCount));
-    detectiveDeck = util.shuffle (cards.generateDetectiveDeck (detectiveCount));
+    let roleDeck = cards.generateRoleDeck (innocentCount, traitorCount, detectiveCount);
+    innocentDeck = cards.generateInnocentDeck (1);//innocentCount);
+    traitorDeck = cards.generateTraitorDeck (1);//traitorCount);
+    detectiveDeck = cards.generateDetectiveDeck (1);//detectiveCount);
 
     playerAddresses.forEach ((address, i) => {
         let roleCard = roleDeck.pop ();
@@ -649,11 +649,23 @@ function endGame ()
 function drawFromFactionDeck (faction)
 {
     if (faction == "innocent")
+    {
+        if (innocentDeck.length <= 0)
+            innocentDeck = cards.generateInnocentDeck (1);
         return innocentDeck.pop ();
+    }
     else if (faction == "traitor")
+    {
+        if (traitorDeck.length <= 0)
+            traitorDeck = cards.generateTraitorDeck (1);
         return traitorDeck.pop ();
+    }
     else if (faction == "detective")
+    {
+        if (detectiveDeck.length <= 0)
+            detectiveDeck = cards.generateDetectiveDeck (1);
         return detectiveDeck.pop ();
+    }
 }
 
 // PRIVATE
