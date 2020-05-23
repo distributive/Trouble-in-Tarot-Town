@@ -1,0 +1,30 @@
+{
+  "name": "trouble-in-tarot-town",
+  "version": "1.0.0",
+  "description": "A card-based variant of the Garry's Mod game mode Trouble in Terrorist Town",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/distributive/Trouble-in-Tarot-Town.git"
+  },
+  "keywords": [
+    "game",
+    "web-app",
+    "social"
+  ],
+  "author": "distributive law",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/distributive/Trouble-in-Tarot-Town/issues"
+  },
+  "homepage": "https://github.com/distributive/Trouble-in-Tarot-Town#readme"
+}
