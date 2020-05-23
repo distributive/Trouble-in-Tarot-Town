@@ -114,7 +114,7 @@ io.on ("connection", (socket) => {
 
             // Update player list for all players
             game.getPlayerAddresses ().forEach ((address, i) => {
-                if (game.getSocketOf (address) != null) // Temp
+                if (!game.isBot (address))
                 {
                     game.getSocketOf (address).emit ("setPlayers", {otherPlayers: game.getOtherPublicPlayerData (address), isPlaying: true, gameIsRunning: game.gameIsRunning ()});
                 }
@@ -178,7 +178,7 @@ function startGame ()
 
     // Set current player set for each player
     game.getPlayerAddresses ().forEach ((address, i) => {
-        if (game.getSocketOf (address) !== null) // Temp
+        if (!game.isBot (address))
         {
             // Ensure the correct player list displays for all players
             game.getSocketOf (address).emit ("setPlayers", {otherPlayers: game.getOtherPublicPlayerData (address), isPlaying: true, gameIsRunning: game.gameIsRunning ()});
@@ -232,25 +232,37 @@ function runTurn ()
             clearInterval (countdown);
             io.emit ("setTurnCountdown", -1);
 
+
+
             // Randomise timed-out players
             game.randomiseRemainingMoves ();
 
-            // Send out results
+
+
+            // Send out the results of actions
             let data = game.getResultsOfTurn ();
             let results = data.results;
             Object.keys (results).forEach ((address, i) => {
-                results[address].messages.forEach ((message, j) => {
-                    game.sendStatementTo (address, message);
-                });
-                Object.keys (results[address].deaths).forEach ((otherAddress, j) => {
-                    if (game.getSocketOf (address) != null) // TEMP
-                        game.getSocketOf (address).emit ("revealIsDead", {"name": game.getNameOf (otherAddress), "isDead": results[address].deaths[otherAddress]});
-                });
+                if (!game.isBot (address))
+                {
+                    // Send text results of actions
+                    results[address].messages.forEach ((message, j) => {
+                        game.sendStatementTo (address, message);
+                    });
+
+                    // Update the known dead of each player
+                    game.getPlayerAddresses ().forEach ((otherAddress, j) => {
+                        game.getSocketOf (address).emit ("revealIsDead", {"name": game.getNameOf (otherAddress), "isDead": game.getKnownDeadOf (address).includes (otherAddress)});
+                    });
+                }
             });
+
+            // Inform the newly killed they are dead
             data.newDead.forEach((address, i) => {
-                if (game.getSocketOf (address) != null) // TEMP
+                if (!game.isBot (address))
                     game.getSocketOf (address).emit ("setIsDead", true);
             });
+
 
 
             // Check win conditions
@@ -262,8 +274,8 @@ function runTurn ()
                 game.endGame ();
 
                 game.sendStatementToAllUsers ("Game over!");
-                game.getPlayerAddresses ().forEach((address, i) => {
-                    if (game.getSocketOf (address) != null) // Temp
+                game.getPlayerAddresses ().forEach ((address, i) => {
+                    if (!game.isBot (address))
                         game.getSocketOf (address).emit ("endGame", game.getTeamOf (address) == winners);
                 });
 

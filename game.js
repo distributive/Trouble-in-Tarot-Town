@@ -90,6 +90,14 @@ function getSocketOf (address)
     return users[address].socket;
 }
 
+function isBot (address)
+{
+    if (!hasUser (address))
+        return false;
+
+    return users[address].socket == null;
+}
+
 function sendMessageTo (address, sender, message, storeInLog = true)
 {
     if (!hasUser (address) || users[address].socket == null)
@@ -349,7 +357,6 @@ function Result (address, isDead)
     this.address = address;
     this.isDead = isDead;
     this.messages = [];
-    this.deaths = {};
 }
 
 function getGameState ()
@@ -542,13 +549,11 @@ function getResultsOfTurn ()
                 if (isDead (targetAddress))
                 {
                     results[address].messages.push (`${targetName} was already dead before you found them.`);
-                    results[address].deaths[targetAddress] = true;
                     logDeath (address, targetAddress, true);
                 }
                 else
                 {
                     // Correct fake death claims on being proved false
-                    results[address].deaths[targetAddress] = false;
                     logDeath (address, targetAddress, false);
 
                     // Detect kills involving the target
@@ -556,6 +561,12 @@ function getResultsOfTurn ()
                     let victims = (moves[targetAddress].cardTitle == cards.killTitle) ? [moves[targetAddress].target] :
                                   (moves[targetAddress].cardTitle == cards.c4Title) ? playerAddresses.filter (a => moves[a].target == targetAddress) :
                                   [];
+
+                    // Log deaths
+                    victims.forEach ((victim, i) => {
+                        logDeath (address, victim, true);
+                    });
+
 
                     if (killers.length > 0)
                         results[address].messages.push (`${targetName} was killed by ${util.formatList (killers.map (a => getNameOf (a)))}.`);
@@ -573,7 +584,6 @@ function getResultsOfTurn ()
                 {
                     let response = (isDead (targetAddress)) ? `${targetName} is already dead.` : `You killed ${targetName}.`;
                     results[address].messages.push (response);
-                    results[address].deaths[targetAddress] = true;
                     logDeath (address, targetAddress, true);
 
                     if (!results[targetAddress].isDead)
@@ -586,8 +596,7 @@ function getResultsOfTurn ()
             break;
 
             case cards.deadTitle:
-                results[targetAddress].messages.push (`${getNameOf (address)} informed you they are dead.`)
-                results[targetAddress].deaths[address] = true;
+                results[targetAddress].messages.push (`${getNameOf (address)} informed you they are dead.`);
                 logDeath (targetAddress, address, true);
             break;
 
@@ -623,7 +632,6 @@ function getResultsOfTurn ()
                         killed.push (victim);
                     }
 
-                    results[address].deaths[victim] = true;
                     logDeath (address, victim, true);
                 });
 
@@ -634,8 +642,7 @@ function getResultsOfTurn ()
             break;
 
             case cards.titlePlayDead:
-                results[targetAddress].messages.push (`${getNameOf (address)} informed you they are dead.`)
-                results[targetAddress].deaths[address] = true;
+                results[targetAddress].messages.push (`${getNameOf (address)} informed you they are dead.`);
                 logDeath (targetAddress, address, true);
             break;
         }
@@ -713,6 +720,7 @@ module.exports = {
     getUserAddresses,
     userCount,
     getSocketOf,
+    isBot,
 
     sendMessageTo,
     sendStatementTo,
