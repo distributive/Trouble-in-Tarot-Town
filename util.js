@@ -32,10 +32,32 @@ function formatList (array)
         return array[0] + ", " + formatList (array.slice (1));
 }
 
+function indentString (string, indent)
+{
+    return string.split ('\n').map (line => indent + line).join (`\n`);
+}
+
+// function boundStringWidth (string, charLimit)
+// {
+//     let fn = (line) => {
+//         let newLine = "";
+//         while (line.length > charLimit)
+//         {
+//             newLine += line.slice (0, charLimit);
+//             line = line.slice (charLimit, line.length);
+//         }
+//         return newLine + line;
+//     };
+//
+//     return string.split ('\n').map (fn).join (`\n`);
+// }
+
 
 
 module.exports = {
     shuffle,
     choose,
-    formatList
+    formatList,
+    indentString,
+    // boundStringWidth
 };

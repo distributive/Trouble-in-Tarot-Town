@@ -1,5 +1,6 @@
-let cards = require ("./cards.js");
-let util = require ("./util.js");
+const cards = require ("./cards.js");
+const util = require ("./util.js");
+const flag = require ("./flags.js");
 
 let users = {};
 let playerAddresses = [];
@@ -64,6 +65,11 @@ function userIsConnected (address)
         return false;
 
     return users[address].online;
+}
+
+function getUserAddresses ()
+{
+    return Object.keys (users);
 }
 
 function userCount ()
@@ -357,11 +363,8 @@ function startGame ()
     turn = 0;
     resetPlayers ();
 
-    let traitorFraction = 0.3;
-    let detectiveFraction = 0.1777778;
-
-    let traitorCount = Math.ceil (traitorFraction * playerAddresses.length);
-    let detectiveCount = Math.floor (detectiveFraction * playerAddresses.length);
+    let traitorCount = Math.ceil (flag.TRAITOR_FRACTION * playerAddresses.length);
+    let detectiveCount = Math.floor (flag.DETECTIVE_FRACTION * playerAddresses.length);
     let innocentCount = Math.max (0, playerAddresses.length - traitorCount - detectiveCount);
 
     let roleDeck = cards.generateRoleDeck (innocentCount, traitorCount, detectiveCount);
@@ -691,6 +694,7 @@ module.exports = {
     disconnectUser,
     hasUser,
     userIsConnected,
+    getUserAddresses,
     userCount,
     getSocketOf,
 

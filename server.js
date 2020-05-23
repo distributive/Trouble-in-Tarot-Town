@@ -8,8 +8,10 @@ let io = require ("socket.io") (http);
 
 let fs = require ("fs");
 
-let game = require ("./game.js");
-let util = require ("./util.js");
+const game = require ("./game.js");
+const util = require ("./util.js");
+const flag = require ("./flags.js");
+const commands = require ("./commands.js")
 
 
 
@@ -41,14 +43,6 @@ if (botCount > 0)
         game.addPlayer (i+"", BOT_NAMES[i]);
     }
 }
-
-
-
-// Game constants
-const MINIMUM_PLAYER_COUNT = 3;
-const TURN_TIME_LIMIT = 60;
-const PRE_GAME_TIME = 5;
-const POST_GAME_TIME = 20;
 
 
 
@@ -130,10 +124,10 @@ io.on ("connection", (socket) => {
             game.sendStatementToAllOtherUsers (`${game.getNameOf (address)} has joined.`, address, false);
 
             // If enough players are online, start a game
-            if (!game.gameIsRunning () && game.getPlayerAddresses ().length >= MINIMUM_PLAYER_COUNT)
+            if (!game.gameIsRunning () && game.getPlayerAddresses ().length >= flag.MINIMUM_PLAYER_COUNT)
             {
-                game.sendStatementToAllUsers (`A game will begin in ${PRE_GAME_TIME} seconds`, false);
-                setTimeout (() => {startGame ();}, PRE_GAME_TIME * 1000);
+                game.sendStatementToAllUsers (`A game will begin in ${flag.PRE_GAME_TIME} seconds`, false);
+                setTimeout (() => {startGame ();}, flag.PRE_GAME_TIME * 1000);
             }
         }
     });
@@ -155,6 +149,10 @@ io.on ("connection", (socket) => {
 
 function startGame ()
 {
+    // Check a game is not already running
+    if (game.gameIsRunning ())
+        return;
+
     // Purge disconnected players
     game.getPlayerAddresses ().forEach((address, i) => {
         if (!game.userIsConnected (address))
@@ -165,7 +163,7 @@ function startGame ()
     });
 
     // Check a game is viable
-    if (game.getPlayerAddresses ().length < MINIMUM_PLAYER_COUNT)
+    if (game.getPlayerAddresses ().length < flag.MINIMUM_PLAYER_COUNT)
     {
         game.sendStatementToAllUsers ("There are not enough players online for a game. Waiting for more players.");
         return;
@@ -221,7 +219,7 @@ function runTurn ()
             game.getSocketOf (address).emit ("setCards", game.getCardsOf (address));
     });
 
-    let timeLeft = TURN_TIME_LIMIT;
+    let timeLeft = flag.TURN_TIME_LIMIT;
     let countdown = setInterval (() => {
         io.emit ("setTurnCountdown", timeLeft);
         timeLeft--;
@@ -306,7 +304,7 @@ function runTurn ()
 
                 game.sendStatementToAllUsers ("A new game will begin shortly.");
 
-                let timeLeftUntilNewGame = POST_GAME_TIME;
+                let timeLeftUntilNewGame = flag.POST_GAME_TIME;
                 let gameCountdown = setInterval (() => {
                     io.emit ("setTurnCountdown", timeLeftUntilNewGame);
                     timeLeftUntilNewGame--;
