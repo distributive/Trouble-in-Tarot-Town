@@ -5,6 +5,8 @@ function Card (title, description, targetted)
     this.title = title;
     this.description = description;
     this.targetted = targetted;
+
+    cards[title = this];
 }
 function RoleCard (title, description, faction, team)
 {
@@ -12,6 +14,14 @@ function RoleCard (title, description, faction, team)
     this.description = description;
     this.faction = faction;
     this.team = team;
+
+    roleCards[title] = this;
+}
+function NullCard ()
+{
+    this.title = nullTitle;
+    this.description = "";
+    this.targetted = false;
 }
 
 
@@ -24,6 +34,8 @@ const traitorDescription = "<b>ID:</b> you are a <b><span class='bad'>traitor</s
 
 const detectiveTitle = "Detective";
 const detectiveDescription = "<b>ID:</b> you are a <b><span class='detective'>detective</span></b>.";
+
+
 
 const deadTitle = "DEAD";
 const deadDescription = "Target a player and inform them you are dead. You <b>must</b> play this card.";
@@ -63,9 +75,7 @@ const jailTargetted = true;
 
 
 
-// Blank card for nullified actions
 const nullTitle = "null";
-const nullDescription = "";
 
 
 
@@ -73,32 +83,20 @@ let roleCards = {};
 let cards = {};
 
 const cardInnocent = new RoleCard (innocentTitle, innocentDescription, "innocent", "innocent");
-roleCards[innocentTitle] = cardInnocent;
 const cardTraitor = new RoleCard (traitorTitle, traitorDescription, "traitor", "traitor");
-roleCards[traitorTitle] = cardTraitor;
 const cardDetective = new RoleCard (detectiveTitle, detectiveDescription, "detective", "innocent");
-roleCards[detectiveTitle] = cardDetective;
 
 const cardDead = new Card (deadTitle, deadDescription, deadTargetted);
-cards[deadTitle] = cardDead;
 const cardWitness = new Card (witnessTitle, witnessDescription, witnessTargetted);
-cards[witnessTitle] = cardWitness;
 const cardKill = new Card (killTitle, killDescription, killTargetted);
-cards[killTitle] = cardKill;
 const cardInspect = new Card (inspectTitle, inspectDescription, inspectTargetted);
-cards[inspectTitle] = cardInspect;
 const cardTamper = new Card (tamperTitle, tamperDescription, tamperTargetted);
-cards[tamperTitle] = cardTamper;
 const cardDisguise = new Card (disguiseTitle, disguiseDescription, disguiseTargetted);
-cards[disguiseTitle] = cardDisguise;
 const cardC4 = new Card (c4Title, c4Description, c4Targetted);
-cards[c4Title] = cardC4;
 const cardPlayDead = new Card (playDeadTitle, playDeadDescription, playDeadTargetted);
-cards[playDeadTitle] = cardPlayDead;
 const cardJail = new Card (jailTitle, jailDescription, jailTargetted);
-cards[jailTitle] = cardJail;
 
-const cardNull = new Card (nullTitle, nullDescription, null);
+const cardNull = new NullCard ();
 
 
 
