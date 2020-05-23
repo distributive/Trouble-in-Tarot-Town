@@ -6,7 +6,7 @@ function Card (title, description, targetted)
     this.description = description;
     this.targetted = targetted;
 
-    cards[title = this];
+    cards[title] = this;
 }
 function RoleCard (title, description, faction, team)
 {
