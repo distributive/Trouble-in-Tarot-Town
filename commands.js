@@ -150,7 +150,7 @@ new Command
         else
         {
             flag[args[0]] = args[1];
-            console.log (`Set value of ${args[0]} to ${args[1]+0}.`);
+            console.log (`Set value of ${args[0]} to ${args[1]}.`);
         }
     }
 );
