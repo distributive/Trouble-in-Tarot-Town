@@ -11,7 +11,7 @@ let fs = require ("fs");
 const game = require ("./game.js");
 const util = require ("./util.js");
 const flag = require ("./flags.js");
-const commands = require ("./commands.js")
+const commands = require ("./commands.js");
 
 
 
@@ -126,6 +126,7 @@ io.on ("connection", (socket) => {
             // If enough players are online, start a game
             if (!game.gameIsRunning () && game.getPlayerAddresses ().length >= flag.MINIMUM_PLAYER_COUNT)
             {
+                game.startPregame ();
                 game.sendStatementToAllUsers (`A game will begin in ${flag.PRE_GAME_TIME} seconds`, false);
                 setTimeout (() => {startGame ();}, flag.PRE_GAME_TIME * 1000);
             }
@@ -150,7 +151,7 @@ io.on ("connection", (socket) => {
 function startGame ()
 {
     // Check a game is not already running
-    if (game.gameIsRunning ())
+    if (game.gameIsInProgress ())
         return;
 
     // Purge disconnected players

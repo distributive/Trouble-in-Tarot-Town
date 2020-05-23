@@ -2,9 +2,14 @@ const cards = require ("./cards.js");
 const util = require ("./util.js");
 const flag = require ("./flags.js");
 
+const GAME_NO_GAME = 0;
+const GAME_RUNNING = 1;
+const GAME_PREGAME = 2;
+const GAME_POSTGAME = 3;
+
 let users = {};
 let playerAddresses = [];
-let gameRunning = false;
+let gameState = GAME_NO_GAME;
 
 
 
@@ -347,9 +352,19 @@ function Result (address, isDead)
     this.deaths = {};
 }
 
+function getGameState ()
+{
+    return gameState;
+}
+
 function gameIsRunning ()
 {
-    return gameRunning;
+    return gameState != GAME_NO_GAME;
+}
+
+function gameIsInProgress ()
+{
+    return gameState == GAME_RUNNING;
 }
 
 function getTurn ()
@@ -357,9 +372,14 @@ function getTurn ()
     return turn;
 }
 
+function startPregame ()
+{
+    gameState = GAME_PREGAME;
+}
+
 function startGame ()
 {
-    gameRunning = true;
+    gameState = GAME_RUNNING;
     turn = 0;
     resetPlayers ();
 
@@ -385,7 +405,11 @@ function startGame ()
 
 function endGame ()
 {
-    gameRunning = false;
+    gameState = GAME_POSTGAME;
+
+    playerAddresses.forEach ((address, i) => {
+        users[address].hand = [];
+    });
 }
 
 function startTurn ()
@@ -640,14 +664,6 @@ function checkWinConditions ()
         return "";
 }
 
-function endGame ()
-{
-    playerAddresses.forEach ((address, i) => {
-        users[address].hand = [];
-    });
-
-}
-
 // PRIVATE
 function drawFromFactionDeck (faction)
 {
@@ -731,8 +747,11 @@ module.exports = {
     getKnownDeadOf,
     resetPlayers,
 
+    getGameState,
     gameIsRunning,
+    gameIsInProgress,
     getTurn,
+    startPregame,
     startGame,
     endGame,
     startTurn,
