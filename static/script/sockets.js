@@ -13,6 +13,10 @@ socket.on ("message", (content) => {
 
 
 /* JOINING */
+socket.on ("connected", () => {
+    clearMessages ();
+});
+
 socket.on ("alreadyConnected", () => {
     displayAlreadyConnected ();
 });
@@ -77,6 +81,12 @@ socket.on ("revealFaction", (data) => {
     revealFactionOf (data.name, data.faction);
 });
 
+socket.on ("revealFactions", (array) => {
+    array.forEach ((data, i) => {
+        revealFactionOf (data.name, data.faction);
+    });
+});
+
 socket.on ("revealIsDead", (data) => {
     setPlayerIsDead (data.name , data.isDead);
 });
@@ -103,6 +113,8 @@ socket.on ("setTurnCountdown", (value) => {
 /* GAMEPLAY */
 socket.on ("startGame", () => {
     resetFactions ();
+
+    clearMessages ();
 });
 
 socket.on ("drawCard", (card) => {

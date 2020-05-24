@@ -18,3 +18,8 @@ function splitMessages ()
     // Fix scroll height to the bottom of the messages
     $("#message-box")[0].scrollTop = $("#message-box")[0].scrollHeight;
 }
+
+function clearMessages ()
+{
+    $("#message-box").empty ();
+}
