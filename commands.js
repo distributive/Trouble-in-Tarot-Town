@@ -130,6 +130,7 @@ new Command
         if (args.length == 0)
         {
             config.loadDefaults ();
+            console.log ("Reset settings to default values.");
         }
         else
         {
