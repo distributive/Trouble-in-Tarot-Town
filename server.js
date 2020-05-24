@@ -10,9 +10,8 @@ let fs = require ("fs");
 
 const game = require ("./game.js");
 const util = require ("./util.js");
-const flag = require ("./flags.js");
+const config = require ("./config.js");
 const commands = require ("./commands.js");
-
 
 
 // Command line arguments
@@ -124,11 +123,11 @@ io.on ("connection", (socket) => {
             game.sendStatementToAllOtherUsers (`${game.getNameOf (address)} has joined.`, address, false);
 
             // If enough players are online, start a game
-            if (!game.gameIsRunning () && game.getPlayerAddresses ().length >= flag.MINIMUM_PLAYER_COUNT)
+            if (!game.gameIsRunning () && game.getPlayerAddresses ().length >= config.settings.MINIMUM_PLAYER_COUNT)
             {
                 game.startPregame ();
-                game.sendStatementToAllUsers (`A game will begin in ${flag.PRE_GAME_TIME} seconds`, false);
-                setTimeout (() => {startGame ();}, flag.PRE_GAME_TIME * 1000);
+                game.sendStatementToAllUsers (`A game will begin in ${config.settings.PRE_GAME_TIME} seconds`, false);
+                setTimeout (() => {startGame ();}, config.settings.PRE_GAME_TIME * 1000);
             }
         }
     });
@@ -164,7 +163,7 @@ function startGame ()
     });
 
     // Check a game is viable
-    if (game.getPlayerAddresses ().length < flag.MINIMUM_PLAYER_COUNT)
+    if (game.getPlayerAddresses ().length < config.settings.MINIMUM_PLAYER_COUNT)
     {
         game.sendStatementToAllUsers ("There are not enough players online for a game. Waiting for more players.");
         return;
@@ -220,7 +219,7 @@ function runTurn ()
             game.getSocketOf (address).emit ("setCards", game.getCardsOf (address));
     });
 
-    let timeLeft = flag.TURN_TIME_LIMIT;
+    let timeLeft = config.settings.TURN_TIME_LIMIT;
     let countdown = setInterval (() => {
         io.emit ("setTurnCountdown", timeLeft);
         timeLeft--;
@@ -317,7 +316,7 @@ function runTurn ()
 
                 game.sendStatementToAllUsers ("A new game will begin shortly.");
 
-                let timeLeftUntilNewGame = flag.POST_GAME_TIME;
+                let timeLeftUntilNewGame = config.settings.POST_GAME_TIME;
                 let gameCountdown = setInterval (() => {
                     io.emit ("setTurnCountdown", timeLeftUntilNewGame);
                     timeLeftUntilNewGame--;

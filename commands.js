@@ -1,7 +1,6 @@
 const game = require ("./game.js");
 const util = require ("./util.js");
-const flag = require ("./flags.js");
-
+const config = require ("./config.js");
 
 
 let commands = {};
@@ -29,44 +28,35 @@ new Command
     }
 );
 
-// flag
+// get
 new Command
 (
-    "flag",
-    "Prints the value of a flag.\n" +
+    "get",
+    "Prints the value of a setting.\n" +
+    "Prints all settings if none specified.\n" +
     "Usage:\n" +
-    "  flag <flag>",
+    "  get <setting>\n" +
+    "  get",
     (args) => {
         if (args.length > 0)
         {
             args.filter ((arg, pos) => args.indexOf (arg) == pos).forEach ((arg, i) => {
-                if (Object.keys (flag).includes (arg))
+                if (Object.keys (config.settings).includes (arg))
                 {
-                    console.log (commands[arg].name);
-                    console.log (util.indentString (commands[arg].helpText, "  "));
+                    console.log (config.settings[arg]);
                 }
                 else
                 {
-                    console.log (`No such flag: ${arg}`);
+                    console.error (`No such setting: ${arg}`);
                 }
             });
         }
         else
         {
-            console.log ("No flag specified.")
+            Object.keys (config.settings).forEach ((id, i) => {
+                console.log (`${id}: ${config.settings[id]}`);
+            });
         }
-    }
-);
-
-// flags
-new Command
-(
-    "flags",
-    "Prints all flag values.",
-    (args) => {
-        Object.keys (flag).forEach ((id, i) => {
-            console.log (`${id}: ${flag[id]}`);
-        });
     }
 );
 
@@ -102,7 +92,7 @@ new Command
 
             console.log ("RUNNING THE SERVER");
             console.log ("  This server must be run using node: `node <path>/server.js`");
-            console.log ("  It supports two optional flags:");
+            console.log ("  It supports two optional options:");
             console.log ("    `node <path>/server.js <port> <bots>`");
             console.log ("    <port> defines the port to listen to (default 8080).");
             console.log (`    <bots> defines the number of bots to load to (default: 0, max: 8, NOTE: for testing only).`);
@@ -125,31 +115,65 @@ new Command
     }
 );
 
+// reset
+new Command
+(
+    "reset",
+    "Resets a settings to its default value.\n" +
+    "Resets all settings if none specified.\n" +
+    "Settings:\n" +
+    Object.keys (config.settings).map ((f) => "  " + f).join (`\n`) + `\n` +
+    "Usage:\n" +
+    "  reset <setting>\n" +
+    "  reset",
+    (args) => {
+        if (args.length == 0)
+        {
+            config.loadDefaults ();
+        }
+        else
+        {
+            args.forEach ((arg, i) => {
+                if (config.settings.hasOwnProperty (arg))
+                {
+                    config.loadDefault (key);
+                    console.log (`Reset ${arg} to: ${config.settings[arg]}`);
+                }
+                else
+                {
+                    console.error (`No such setting: ${arg}`);
+                }
+            });
+        }
+    }
+);
+
 // set
 new Command
 (
     "set",
-    "Sets a global flag\n" +
-    "Flags:\n" +
-    Object.keys (flag).map ((f) => "  " + f).join (`\n`) + `\n` +
+    "Sets a global setting\n" +
+    "Settings:\n" +
+    Object.keys (config.settings).map ((f) => "  " + f).join (`\n`) + `\n` +
     "Usage:\n" +
-    "  set <flag> <value>",
+    "  set <setting> <value>",
     (args) => {
         if (args.length < 2)
         {
-            console.log ("Format: set <flag> <value>");
+            console.error ("Format: set <setting> <value>");
         }
-        else if (!flag.hasOwnProperty (args[0]))
+        else if (!config.settings.hasOwnProperty (args[0]))
         {
-            console.log (`No such flag: ${args[0]}`);
+            console.error (`No such setting: ${args[0]}`);
         }
         else if (isNaN (args[1]))
         {
-            console.log (`${args[1]} is not a number.`);
+            console.error (`${args[1]} is not a number.`);
         }
         else
         {
-            flag[args[0]] = args[1];
+            config.settings[args[0]] = parseInt (args[1]);
+            config.saveSettings ();
             console.log (`Set value of ${args[0]} to ${args[1]}.`);
         }
     }
@@ -180,7 +204,7 @@ new Command
         console.log ();
 
         console.log ("GAME STATE");
-        console.log (game.gameIsRunning () ? "  running" : "  not running");
+        console.log ("  " + game.getGameStateString ());
 
         console.log ();
         console.log ("================================================================");

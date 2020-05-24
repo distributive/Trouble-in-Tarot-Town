@@ -1,6 +1,6 @@
 const cards = require ("./cards.js");
 const util = require ("./util.js");
-const flag = require ("./flags.js");
+const config = require ("./config.js");
 
 const GAME_NO_GAME = 0;
 const GAME_RUNNING = 1;
@@ -364,6 +364,21 @@ function getGameState ()
     return gameState;
 }
 
+function getGameStateString ()
+{
+    switch (gameState)
+    {
+        case GAME_NO_GAME:
+            return "NO GAME";
+        case GAME_PREGAME:
+            return "PREGAME";
+        case GAME_RUNNING:
+            return "RUNNING";
+        case GAME_POSTGAME:
+            return "POSTGAME";
+    }
+}
+
 function gameIsRunning ()
 {
     return gameState != GAME_NO_GAME;
@@ -390,8 +405,8 @@ function startGame ()
     turn = 0;
     resetPlayers ();
 
-    let traitorCount = Math.ceil (flag.TRAITOR_FRACTION * playerAddresses.length);
-    let detectiveCount = Math.floor (flag.DETECTIVE_FRACTION * playerAddresses.length);
+    let traitorCount = Math.ceil (config.settings.TRAITOR_FRACTION * playerAddresses.length);
+    let detectiveCount = Math.floor (config.settings.DETECTIVE_FRACTION * playerAddresses.length);
     let innocentCount = Math.max (0, playerAddresses.length - traitorCount - detectiveCount);
 
     let roleDeck = cards.generateRoleDeck (innocentCount, traitorCount, detectiveCount);
@@ -756,6 +771,7 @@ module.exports = {
     resetPlayers,
 
     getGameState,
+    getGameStateString,
     gameIsRunning,
     gameIsInProgress,
     getTurn,
