@@ -302,6 +302,16 @@ function isDead (address)
     return users[address].dead;
 }
 
+function getAllDead ()
+{
+    return playerAddresses.filter (address => isDead (address));
+}
+
+function getAllLiving ()
+{
+    return playerAddresses.filter (address => !isDead (address));
+}
+
 function removeCardFromHand (address, cardTitle)
 {
     if (!hasUser (address) || !users[address].hand.some (card => card.title == cardTitle))
@@ -765,6 +775,8 @@ module.exports = {
     getAddressesOfTeam,
     getCardsOf,
     isDead,
+    getAllDead,
+    getAllLiving,
     removeCardFromHand,
     killPlayer,
     getKnownDeadOf,

@@ -56,6 +56,10 @@ io.on ("connection", (socket) => {
         socket.emit ("alreadyConnected");
         return;
     }
+    else
+    {
+        socket.emit ("connected");
+    }
 
     // Add user/update old user with new socket
     game.addUser (address, socket);
@@ -66,7 +70,7 @@ io.on ("connection", (socket) => {
     {
         socket.emit ("alreadyJoined");
         socket.emit ("setPlayers", {otherPlayers: game.getOtherPublicPlayerData (address), isPlaying: true, gameIsRunning: game.gameIsRunning ()});
-        game.getSocketOf (address).emit ("setFaction", (!game.isDead (address)) ? game.getFactionOf (address) : "dead");
+        socket.emit ("setFaction", (!game.isDead (address)) ? game.getFactionOf (address) : "dead");
         socket.emit ("setName", game.getNameOf (address));
         socket.emit ("setCards", game.getCardsOf (address));
         socket.emit ("revealMultipleDead", game.getKnownDeadOf (address).map (a => {return {name: game.getNameOf (a), isDead: true};}));
@@ -84,6 +88,12 @@ io.on ("connection", (socket) => {
     {
         socket.emit ("requestJoin");
         socket.emit ("setPlayers", {otherPlayers: game.getPublicPlayerData (), isPlaying: false, gameIsRunning: game.gameIsRunning ()});
+
+        // Reset these in case the server was reset but the client didn't refresh
+        socket.emit ("setCards", []);
+        socket.emit ("setFaction", "spectator");
+        socket.emit ("setCards", game.getCardsOf (address));
+        socket.emit ("setTurnCountdown", -1);
     }
 
     socket.on ("disconnect", () => {
@@ -313,6 +323,20 @@ function runTurn ()
                 {
                     game.sendStatementToAllUsers (`The <span class='detective'>detectives</span> were ${util.formatList (detectiveTeam)}.`);
                 }
+
+                // Reveal all information
+                let factionInfo = game.getPlayerAddresses ().map ((a) => {return {"name": game.getNameOf (a), "faction": game.getFactionOf (a)};});
+                let deathInfo = game.getPlayerAddresses ().map ((a) => {return {"name": game.getNameOf (a), "isDead": game.isDead (a)};});
+
+                game.getPlayerAddresses ().forEach ((address, i) => {
+                    if (!game.isBot (address))
+                    {
+                        let socket = game.getSocketOf (address);
+                        socket.emit ("revealFactions", factionInfo);
+                        socket.emit ("revealMultipleDead", deathInfo);
+                    }
+                });
+
 
                 game.sendStatementToAllUsers ("A new game will begin shortly.");
 
