@@ -405,8 +405,8 @@ function startGame ()
     turn = 0;
     resetPlayers ();
 
-    let traitorCount = Math.ceil (config.settings.TRAITOR_FRACTION * playerAddresses.length);
-    let detectiveCount = Math.floor (config.settings.DETECTIVE_FRACTION * playerAddresses.length);
+    let traitorCount = Math.ceil (config.settings.TRAITOR_FRACTION * playerAddresses.length + config.settings.TRAITOR_CONSTANT);
+    let detectiveCount = Math.floor (config.settings.DETECTIVE_FRACTION * playerAddresses.length + config.settings.DETECTIVE_CONSTANT);
     let innocentCount = Math.max (0, playerAddresses.length - traitorCount - detectiveCount);
 
     let roleDeck = cards.generateRoleDeck (innocentCount, traitorCount, detectiveCount);
