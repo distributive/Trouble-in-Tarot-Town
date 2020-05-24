@@ -3,7 +3,7 @@ function shuffle (array) // Mutates input
     let temp, randomIndex;
     for (let i = array.length - 1; i >= 0; i--)
     {
-        randomIndex = Math.floor (Math.random () * i);
+        randomIndex = Math.floor (Math.random () * array.length);
 
         temp = array[i];
         array[i] = array[randomIndex];
