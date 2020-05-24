@@ -64,15 +64,16 @@ function loadDefaults ()
     });
 
 }
-function loadDefault (setting, value)
+function loadDefault (setting)
 {
-    if (settings.hasOwnProperty (setting) && !isNaN (value))
-        settings[setting] = parseInt (value);
+    if (settings.hasOwnProperty (setting) && defaultSettings.hasOwnProperty (setting))
+        settings[setting] = defaultSettings[setting];
 }
 
 module.exports = {
     settings,
     saveSettings,
     loadSettings,
-    loadDefaults
+    loadDefaults,
+    loadDefault
 }

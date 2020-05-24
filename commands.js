@@ -137,7 +137,7 @@ new Command
             args.forEach ((arg, i) => {
                 if (config.settings.hasOwnProperty (arg))
                 {
-                    config.loadDefault (key);
+                    config.loadDefault (arg);
                     console.log (`Reset ${arg} to: ${config.settings[arg]}`);
                 }
                 else
