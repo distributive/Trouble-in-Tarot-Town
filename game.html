@@ -33,6 +33,7 @@
 		<script src="static/script/announcements.js"></script>
 		<script src="static/script/icon.js"></script>
 		<script src="static/script/messages.js"></script>
+		<script src="static/script/pages.js"></script>
 
 		<!-- Socket scripts -->
 		<script src="/socket.io/socket.io.js"></script>
@@ -44,7 +45,7 @@
 		<div id="toolbar">
 			<div id="toolbar-box">
 				<div id="no-target" class="button inactive">
-					<p>Play card with no target</p>
+					<span>Play card with no target</span>
 				</div>
 	        </div>
         </div>
@@ -58,6 +59,12 @@
 				<div id="player-name"></div>
 				<div id="player-count"></div>
 			</div>
+		</div>
+		<div id="open-rules" class="button">
+			<span>How to play</span>
+		</div>
+		<div id="open-card-dex" class="button">
+			<span>Cards</span>
 		</div>
 		<div id="countdown">
 			<p></p>
@@ -103,6 +110,29 @@
 					<p>While you are dead, you can only draw and play DEAD cards. These inform other players of your demise.</p>
 					<p>Click anywhere to resume.</p>
 				</div>
+			</div>
+		</div>
+		<div id="rules" class="page">
+			<div class="window">
+				<h5>How to play</h5>
+				<p>The game consists of two teams: <span class="good">innocents</span> and <span class="bad">traitors</span>. The goal of each team is to kill all members of the other.</p>
+				<p>Games consist of turns. During each turn, every player must play exactly one card. Turns last until all players have played, or the turn countdown reaches 0. At the end of the turn time limit, all players who have not played a card will have a card randomly played on a valid target for them.</p>
+				<p>If you die during a game, you are still an active participant (and still win with the team you started in). You still have to play a card each turn, but this card must be a DEAD card, which you draw each turn instead of your regular draw. Playing a DEAD card on another player simply informs them you are dead.</p>
+				<p>Communicating with other players is allowed, and encouraged. However, once you are dead you must immediately stop talking. Telling other players how you died, or even that you died, is prohibited.</p>
+				<br>
+				<br>
+				<br>
+				<br>
+				<p>The essence of the game is to use social deduction to route out the traitors as an innocent, and hide in plain sight as a traitor. Innocents should tactically decide who to watch to try and observe traitor behaviour. Traitors should carefully decide who to kill, and when, to survive being found by the innocents who outnumber them.</p>
+				<p>On top of their default abilities, the innocent team will sometimes have a number of <span class="detective">detective</span> players, provided enough players are in the game. Detectives draw cards from a separate pool to their innocent allies, giving them access to a wider range of abilities for finding traitors and defending against them. Innocents should be careful to protect their detectives without outing them to traitors. Traitors should aim to kill the detective early.</p>
+				<div id="close-rules" class="button"><span>Resume</span></div>
+			</div>
+		</div>
+		<div id="card-dex" class="page">
+			<div class="window">
+				<h5>Card Dex</h5>
+				<div id="cards"></div>
+				<div id="close-card-dex" class="button"><span>Resume</span></div>
 			</div>
 		</div>
 	</body>

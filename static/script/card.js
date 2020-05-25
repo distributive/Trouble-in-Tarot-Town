@@ -2,9 +2,19 @@ let CARD_ASPECT = 7/5;
 
 
 
+function createCardHTML (cardInfo)
+{
+    return cardTempl.replace ("@title", cardInfo.title).replace ("@description", cardInfo.description);
+}
+
 function createCard (cardInfo)
 {
-    let jQueryRef = $(cardTempl.replace ("@title", cardInfo.title).replace ("@description", cardInfo.description)).appendTo ($("#toolbar-box"));
+    return $(createCardHTML (cardInfo));
+}
+
+function createCardObject (cardInfo)
+{
+    let jQueryRef = createCard (cardInfo).appendTo ($("#toolbar-box"));
     return new CardObject (jQueryRef, cardInfo);
 }
 
@@ -31,16 +41,12 @@ function CardObject (jQueryRef, cardInfo)
     this.setWidth = (width) =>
     {
         this.jQueryRef.css ("width", width + "vw");
-        this.jQueryRef.css ("padding-top", (width * CARD_ASPECT) + "vw");
         this.jQueryRef.css ("border-radius", (width * 0.156) + "vw");
         this.jQueryRef.children ().css ("font-size", (0.08 * width) + "vw");
     };
     this.setHeight = (height) =>
     {
-        this.jQueryRef.css ("width", (height / CARD_ASPECT) + "vw");
-        this.jQueryRef.css ("padding-top", height + "vw");
-        this.jQueryRef.css ("border-radius", (height * 0.156 / CARD_ASPECT) + "vw");
-        this.jQueryRef.children ().css ("font-size", (0.08 * height / CARD_ASPECT) + "vw");
+        this.setWidth (height / CARD_ASPECT);
     };
 
     /* EVENTS */

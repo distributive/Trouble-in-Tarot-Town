@@ -40,6 +40,14 @@ socket.on ("joinError", (error) => {
 
 
 
+/* CARD DEX */
+socket.on ("setCardDex", (cardDex) => {
+    fillCardDex (cardDex);
+});
+/* CARD DEX END */
+
+
+
 /* SET UI */
 socket.on ("setName", (name) => {
     $("#player-name").html ("You are: <b>" + name + "</b>");

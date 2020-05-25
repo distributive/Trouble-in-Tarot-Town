@@ -13,7 +13,7 @@ let gameState = GAME_NO_GAME;
 
 
 
-let innocentDeck, traitorDeck, detectiveDeck;
+let innocentDeck = [], traitorDeck = [], detectiveDeck = [];
 
 
 
@@ -420,9 +420,6 @@ function startGame ()
     let innocentCount = Math.max (0, playerAddresses.length - traitorCount - detectiveCount);
 
     let roleDeck = cards.generateRoleDeck (innocentCount, traitorCount, detectiveCount);
-    innocentDeck = cards.generateInnocentDeck (1);//innocentCount);
-    traitorDeck = cards.generateTraitorDeck (1);//traitorCount);
-    detectiveDeck = cards.generateDetectiveDeck (1);//detectiveCount);
 
     playerAddresses.forEach ((address, i) => {
         let roleCard = roleDeck.pop ();

@@ -18,6 +18,11 @@ function choose (array)
     return array[Math.floor (Math.random () * array.length)];
 }
 
+function removeDuplicates (array)
+{
+    return array.filter ((e, i) => array.indexOf (e) == i);
+}
+
 function formatList (array)
 {
     if (array.length == 0)
@@ -42,6 +47,7 @@ function indentString (string, indent)
 module.exports = {
     shuffle,
     choose,
+    removeDuplicates,
     formatList,
     indentString
 };

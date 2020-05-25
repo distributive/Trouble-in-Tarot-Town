@@ -5,6 +5,20 @@ $(document).ready (function () {
         e.preventDefault ();
         socket.emit ("attemptJoin", $("#join-menu input[type='text']").val ());
     });
+
+    $("#open-rules").click (() => {
+        showRules ();
+    });
+    $("#close-rules").click (() => {
+        hideRules ();
+    });
+
+    $("#open-card-dex").click (() => {
+        showCardDex ();
+    });
+    $("#close-card-dex").click (() => {
+        hideCardDex ();
+    });
 });
 
 

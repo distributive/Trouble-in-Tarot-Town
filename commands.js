@@ -40,7 +40,7 @@ new Command
     (args) => {
         if (args.length > 0)
         {
-            args.filter ((arg, pos) => args.indexOf (arg) == pos).forEach ((arg, i) => {
+            util.removeDuplicates (args).forEach ((arg, i) => {
                 if (Object.keys (config.settings).includes (arg))
                 {
                     console.log (config.settings[arg]);

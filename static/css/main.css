@@ -24,6 +24,12 @@
     --announcement-header: #aaa4b9;
     --announcement-body: #8a8499;
 
+    --page-border: #2a2732;
+    --page-bg: #1e192b;
+    --page-bg-dim: #0e091b;
+    --page-header: #aaa4b9;
+    --page-body: #8a8499;
+
     --button: #4c475a;
     --button-hover: #6a6479;
     --button-click: #150f25;
@@ -118,8 +124,9 @@ body {
 
 /* BUTTONS */
 .button {
+    position: absolute;
+
     font-family: 'Julius Sans One', sans-serif;
-    text-align: center;
     vertical-align: middle;
 
     border: 0.5vw solid var(--button-border);
@@ -151,10 +158,15 @@ body {
     background-color: var(--button-inactive);
 }
 
-.button p {
+.button > span {
     position: absolute;
+    margin: 0;
+
     top: 50%;
     transform: translateY(-50%);
+
+    width: 100%;
+    text-align: center;
 }
 /* BUTTONS END */
 
@@ -165,70 +177,32 @@ body {
     position: fixed;
 
     width: 10vw;
-    padding-top: 14vw;
 
-    transform: translate(-50%, 50%); /* Centres card around its position */
-
-    background-size: contain;
-    background-image: url("../img/card.png");
-
-    transition: left 0.1s, bottom 0.1s, width 0.1s, padding-top 0.1s, border-radius 0.1s;
+    transform: translate(-50%, 50%);
 
     -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-.card:hover {
-    border-radius: 1.56em;
-    box-shadow: 0 0 20px var(--card-hover-glow);
+      -webkit-user-select: none;
+       -khtml-user-select: none;
+         -moz-user-select: none;
+          -ms-user-select: none;
+              user-select: none;
 }
 
 .card .title-box {
+    display: table;
     position: absolute;
-    margin: auto;
+    margin: 0 auto;
 
     top: 0;
     left: 0;
     right: 0;
 
-    height: 6.5%;
+    width: 90%;
 
     font-family: 'Aclonica', sans-serif;
-    font-size: 0.75vw;
     text-align: center;
-    padding: 12% 14% 12% 14%;
-
-    transition: font-size 0.1s;
-
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-image: url("../img/cardTitleBox.png");
 }
-
-.card .text-box {
-    position: absolute;
-    margin: auto;
-
-    bottom: 2.5%;
-    left: 5%;
-    right: 5%;
-
-    height: 43.5%;
-
-    font-family: 'Julius Sans One', sans-serif;
-    font-size: 0.75vw;
-    text-align: center;
-
-    transition: font-size 0.1s;
-
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-image: url("../img/cardTextBox.png");
-}
-.card .text-box p {
+.card .title-box h1 {
     margin: 0;
     position: absolute;
     top: 50%;
@@ -237,17 +211,62 @@ body {
 
     width: 90%;
 }
+.card .title-box img {
+    display: table-row;
+    width: 100%;
+}
 
+.card .text-box {
+    position: absolute;
+    margin: 0 auto;
+
+    bottom: 2.5%;
+    left: 5%;
+    right: 5%;
+
+    width: 90%;
+
+    font-family: 'Julius Sans One', sans-serif;
+    text-align: center;
+}
+.card .text-box > span {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 90%;
+}
+.card .text-box img {
+    width: 100%;
+}
+
+.card .bg {
+    display: block;
+    width: 100%;
+}
 .card .bg-art {
     position: absolute;
+
     top: 0;
+    left: 0;
 
     width: 100%;
-    height: 100%;
+}
 
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-image: url("../img/cardArtPlaceholder.png");
+#toolbar .card {
+    transition: left 0.1s, bottom 0.1s, width 0.1s, padding-top 0.1s, border-radius 0.1s;
+}
+#toolbar .card:hover {
+    border-radius: 1.56em;
+    box-shadow: 0 0 20px var(--card-hover-glow);
+}
+#toolbar .card .title-box {
+    transition: font-size 0.1s;
+}
+#toolbar .card .text-box {
+    transition: font-size 0.1s;
 }
 /* CARDS END */
 
@@ -576,6 +595,116 @@ body {
     color: var(--announcement-body);
 }
 /* PLAYER INFO END */
+
+
+
+/* PAGES */
+#open-rules {
+    position: absolute;
+
+    top: 0.5vw;
+    left: 17.1vw;
+
+    width: 11vw;
+    height: 2vw;
+
+    font-size: 1.4vw;
+}
+
+#open-card-dex {
+    position: absolute;
+
+    top: 0.5vw;
+    left: 30vw;
+
+    width: 5vw;
+    height: 2vw;
+
+    font-size: 1.4vw;
+}
+
+.page {
+    display: none;
+    position: absolute;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background-color: black;
+
+    z-index: 1000000;
+}
+.page .window {
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: calc(100% - 7vw);
+    height: calc(100% - 4vw);
+
+    padding: 1vw;
+
+    overflow-y: scroll;
+
+    border: 1vw solid var(--page-border);
+    border-radius: 1vw;
+    background-color: var(--page-bg);
+}
+.page .window h5 {
+    font-family: 'Wendy One', sans-serif;
+    font-size: 3vw;
+    color: var(--page-header);
+    text-align: center;
+}
+.page .window h6 {
+    font-family: 'Julius Sans One', sans-serif;
+    font-size: 2vw;
+    font-weight: bold;
+    color: var(--page-header);
+}
+.page .window p {
+    margin-top: 1vw;
+
+    font-family: 'Julius Sans One', sans-serif;
+    font-size: 1vw;
+    color: var(--page-body);
+}
+
+.page .button {
+    position: sticky;
+
+    bottom: 1vw;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 12vw;
+    height: 3vw;
+
+    font-size: 1.5vw;
+}
+
+#card-dex .card-list {
+    margin-top: 1vw;
+    margin-bottom: 4vw;
+
+    padding: 1vw 0;
+
+    border-radius: 1vw;
+    background-color: var(--page-bg-dim);
+}
+
+#card-dex .card {
+    display: inline-block;
+    position: static;
+
+    margin-left: 2vw;
+
+    transform: translate(0, 0);
+}
+/* PAGES END */
 
 
 

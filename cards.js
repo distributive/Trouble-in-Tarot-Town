@@ -100,51 +100,91 @@ const cardNull = new NullCard ();
 
 
 
-function generateRoleDeck (innocentCount, traitorCount, detectiveCount)
+function generateRoleDeck (innocentCount, traitorCount, detectiveCount, shuffled = true)
 {
-    let roleDeck = util.shuffle ([].concat (
+    let roleDeck = [].concat (
         Array (innocentCount).fill ().map (_ => cardInnocent),
         Array (traitorCount).fill ().map (_ => cardTraitor),
         Array (detectiveCount).fill ().map (_ => cardDetective)
-    ));
+    );
+
+    if (shuffled)
+        roleDeck = util.shuffle (roleDeck);
 
     return roleDeck;
 }
 
-function generateInnocentDeck (innocentCount)
+function generateInnocentDeck (innocentCount, shuffled = true)
 {
-    let deck = util.shuffle ([].concat (
+    let deck = [].concat (
         Array (9 * innocentCount).fill ().map (_ => cardWitness),
         Array (4 * innocentCount).fill ().map (_ => cardKill)
-    ));
+    );
+
+    if (shuffled)
+        deck = util.shuffle (deck);
 
     return deck;
 }
 
-function generateTraitorDeck (traitorCount)
+function generateTraitorDeck (traitorCount, shuffled = true)
 {
-    let deck = util.shuffle ([].concat (
+    let deck = [].concat (
         Array (4 * traitorCount).fill ().map (_ => cardWitness),
         Array (4 * traitorCount).fill ().map (_ => cardKill),
         Array (2 * traitorCount).fill ().map (_ => cardTamper),
         Array (2 * traitorCount).fill ().map (_ => cardC4),
         Array (    traitorCount).fill ().map (_ => cardPlayDead)
-    ));
+    );
+
+    if (shuffled)
+        deck = util.shuffle (deck);
 
     return deck;
 }
 
-function generateDetectiveDeck (detectiveCount)
+function generateDetectiveDeck (detectiveCount, shuffled = true)
 {
-    let deck = util.shuffle ([].concat (
+    let deck = [].concat (
         Array (5 * detectiveCount).fill ().map (_ => cardWitness),
         Array (4 * detectiveCount).fill ().map (_ => cardKill),
         Array (3 * detectiveCount).fill ().map (_ => cardInspect),
         Array (    detectiveCount).fill ().map (_ => cardJail)
-    ));
+    );
+
+    if (shuffled)
+        deck = util.shuffle (deck);
 
     return deck;
 }
+
+function getCardDex ()
+{
+    return [
+        {
+            header: "ID cards",
+            description: "Available roles",
+            cards: util.removeDuplicates (generateRoleDeck (1, 1, 1, false))
+        },
+        {
+            header: "Innocent cards",
+            description: "Cards available to innocents",
+            cards: util.removeDuplicates (generateInnocentDeck (1, false))
+        },
+        {
+            header: "Traitor cards",
+            description: "Cards available to traitors",
+            cards: util.removeDuplicates (generateTraitorDeck (1, false))
+        },
+        {
+            header: "Detective cards",
+            description: "Cards available to detectives",
+            cards: util.removeDuplicates (generateDetectiveDeck (1, false))
+        }
+    ];
+}
+
+
 
 function getDeadCard ()
 {
@@ -201,6 +241,8 @@ module.exports = {
     generateInnocentDeck,
     generateTraitorDeck,
     generateDetectiveDeck,
+    getCardDex,
+
     getDeadCard,
     isIdCard,
     isIdCardTitle,

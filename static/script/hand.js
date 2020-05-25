@@ -53,7 +53,7 @@ let hand = new Hand ([]);
 
 function drawCard (card)
 {
-    let cardObject = createCard (card);
+    let cardObject = createCardObject (card);
     cardObject.placeInHand (hand.cards.length);
 
     hand.add (cardObject);

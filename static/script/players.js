@@ -154,12 +154,18 @@ function revealTraitors (names)
 
 function revealFactionOf (name, faction)
 {
-    getPlayerWithName (name).setFaction (faction);
+    let player = getPlayerWithName (name);
+
+    if (player)
+        player.setFaction (faction);
 }
 
 function setPlayerIsDead (name, isDead)
 {
-    getPlayerWithName (name).setDead (isDead);
+    let player = getPlayerWithName (name)
+
+    if (player)
+        player.setDead (isDead);
 }
 
 function resetFactions ()

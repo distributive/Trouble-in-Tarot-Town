@@ -9,6 +9,7 @@ let io = require ("socket.io") (http);
 let fs = require ("fs");
 
 const game = require ("./game.js");
+const cards = require ("./cards.js");
 const util = require ("./util.js");
 const config = require ("./config.js");
 const commands = require ("./commands.js");
@@ -49,6 +50,9 @@ if (botCount > 0)
 io.on ("connection", (socket) => {
     let address = socket.handshake.address + "";
     console.log (`${address} connected.`);
+
+    // Send card list (for card dex page)
+    socket.emit ("setCardDex", cards.getCardDex ());
 
     // Detect duplicate clients
     if (game.userIsConnected (address))
