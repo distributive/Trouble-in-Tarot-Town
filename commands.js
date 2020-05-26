@@ -146,6 +146,7 @@ new Command
                 }
             });
         }
+        config.saveSettings ();
     }
 );
 
