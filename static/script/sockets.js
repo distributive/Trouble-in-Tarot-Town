@@ -50,7 +50,7 @@ socket.on ("setCardDex", (cardDex) => {
 
 /* SET UI */
 socket.on ("setName", (name) => {
-    $("#player-name").html ("You are: <b>" + name + "</b>");
+    $("#player-name").html (name);
 });
 
 socket.on ("setPlayers", (data) => {
@@ -121,8 +121,6 @@ socket.on ("setTurnCountdown", (value) => {
 /* GAMEPLAY */
 socket.on ("startGame", () => {
     resetFactions ();
-
-    clearMessages ();
 });
 
 socket.on ("drawCard", (card) => {

@@ -472,6 +472,10 @@ function attemptMove (source, target, cardTitle, playerAddresses)
     {
         return "You cannot play your ID card.";
     }
+    else if (!cards.isPlayableCardTitle (cardTitle))
+    {
+        return "This is not a playable card. If this is an unexpected result, please report this error.";
+    }
     else if (getTeamOf (target) == "spectator")
     {
         return "This player is not in the current game.";

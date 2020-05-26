@@ -1,54 +1,85 @@
 /* CUSTOM VARIABLES */
 * {
-    --bg: #492C3B;
-    --title-color: white;
+    --color-prim: #306057;
+    --color-prim-alt: #113830;
 
-    --card-color: black;
-    --card-bg: #eaeaea;
-    --card-hover-glow: yellow;
+    --color-sec: #303960;
+    --color-sec-alt: #202950;
 
-    --good: #0b88a4;
-    --bad: #e30000;
-    --detective: #7020bc;
+    --color-light: #efefef;
+    --color-dark: #000001;
+    --color-grey: #afafaf;
 
-    --dead-fg: white;
-    --dead-bg: black;
+    --color-important: #ff0700;
+    --color-highlight: #a8df65;
 
-    --join-border: #2a2732;
-    --join-bg: #1e192b;
+    --color-message: #306057;
+    --color-message-alt: #303960;
 
-    --countdown: red;
+    --color-good: #0b88a4;
+    --color-bad: #e30000;
+    --color-detective: #7020bc;
 
-    --announcement-border: #2a2732;
-    --announcement-bg: #1e192b;
-    --announcement-header: #aaa4b9;
-    --announcement-body: #8a8499;
 
-    --page-border: #2a2732;
-    --page-bg: #1e192b;
+
+    --font-main: 'Julius Sans One', sans-serif;
+
+    --font-header: 'Wendy One', sans-serif;
+    --font-subheader: 'Julius Sans One', sans-serif;
+
+    --font-announcement: 'Acme', sans-serif;
+
+    --font-card-title: 'Aclonica', sans-serif;
+    --font-card-description: 'Julius Sans One', sans-serif;
+
+    --font-counter: 'Chelsea Market', sans-serif;
+
+
+
+    --bg: var(--color-sec);
+    --title-color: var(--color-light);
+
+    --player-text: var(--color-dark);
+
+    --card-text: var(--color-dark);
+    --card-hover-glow: var(--color-highlight);
+
+    --dead-fg: var(--color-light);
+    --dead-bg: var(--color-dark);
+
+    --countdown: var(--color-important);
+
+    --announcement-border: var(--color-sec-alt);
+    --announcement-bg: var(--color-sec);
+    --announcement-header: var(--color-light);
+    --announcement-body: var(--color-light);
+
+    --page-bg: var(--color-sec);
+    --page-border: var(--color-sec-alt);
     --page-bg-dim: #0e091b;
     --page-header: #aaa4b9;
     --page-body: #8a8499;
 
-    --button: #4c475a;
-    --button-hover: #6a6479;
-    --button-click: #150f25;
-    --button-inactive: #151016;
-    --button-border: #2a2732;
-    --button-hover-border: #2a2732;
-    --button-click-border: #251f35;
-    --button-inactive-border: #151020;
-    --button-text: #150f25;
-    --button-hover-text: #150f25;
-    --button-click-text: #4c475a;
-    --button-inactive-text: #0000;
+    --messages-bg: var(--color-grey);
+    --message-bg: var(--color-message);
+    --message-bg-alt: var(--color-message-alt);
+    --message-sender: var(--color-light);
+    --message-content: var(--color-light);
 
-    --messages-border: #2a2732;
-    --messages-bg: #1e192b;
-    --message-bg: #160f26;
-    --message-bg-alt: #1a132a;
-    --message-sender: #cbc7e4;
-    --message-content: #8a8499;
+    --button: var(--color-prim);
+    --button-hover: var(--color-prim-alt);
+    --button-click: var(--color-dark);
+    --button-inactive: #00000022;
+
+    --button-border: var(--color-prim-alt);
+    --button-hover-border: var(--color-dark);
+    --button-click-border: var(--color-dark);
+    --button-inactive-border: #00000000;
+
+    --button-text: var(--color-dark);
+    --button-hover-text: var(--color-dark);
+    --button-click-text: var(--color-light);
+    --button-inactive-text: #00000000;
 }
 /* CUSTOM VARIABLES END */
 
@@ -105,13 +136,13 @@ body {
 
 /* TEXT EFFECTS */
 .good {
-    color: var(--good);
+    color: var(--color-good);
 }
 .bad {
-    color: var(--bad);
+    color: var(--color-bad);
 }
 .detective {
-    color: var(--detective);
+    color: var(--color-detective);
 }
 /* TEXT EFFECTS END */
 
@@ -121,11 +152,11 @@ body {
 .button {
     position: absolute;
 
-    font-family: 'Julius Sans One', sans-serif;
+    font-family: var(--font-main);
     vertical-align: middle;
 
-    border: 0.5vw solid var(--button-border);
-    border-radius: 1vw;
+    border: 0.2vw solid var(--button-border);
+    border-radius: 0.5vw;
 
     color: var(--button-text);
     background-color: var(--button);
@@ -170,10 +201,12 @@ body {
 /* CARDS */
 .card {
     position: fixed;
+    transform: translate(-50%, 50%);
 
     width: 10vw;
 
-    transform: translate(-50%, 50%);
+    font-size: 0.8vw;
+    color: var(--card-text);
 
     -webkit-touch-callout: none;
       -webkit-user-select: none;
@@ -194,7 +227,7 @@ body {
 
     width: 90%;
 
-    font-family: 'Aclonica', sans-serif;
+    font-family: var(--font-card-title);
     text-align: center;
 }
 .card .title-box h1 {
@@ -221,7 +254,7 @@ body {
 
     width: 90%;
 
-    font-family: 'Julius Sans One', sans-serif;
+    font-family: var(--font-card-description);
     text-align: center;
 }
 .card .text-box > span {
@@ -251,7 +284,7 @@ body {
 }
 
 #hand .card {
-    transition: left 0.1s, bottom 0.1s, width 0.1s, padding-top 0.1s, border-radius 0.1s;
+    transition: left 0.1s, bottom 0.1s, width 0.1s, padding-top 0.1s, border-radius 0.1s, transform 0.1s;
 }
 #hand .card:hover {
     border-radius: 1.56em;
@@ -318,6 +351,9 @@ body {
 
     border-radius: 90px;
     background-color: grey;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url("../img/iconUnknown.png");
 }
 
 #players .player .tag {
@@ -332,7 +368,8 @@ body {
     padding-top: 0.5em;
     padding-bottom: 0.5em;
 
-    font-family: 'Julius Sans One', sans-serif;
+    color: var(--player-text);
+    font-family: var(--font-main);
     font-weight: bold;
     text-align: center;
     word-wrap: break-word;
@@ -352,16 +389,23 @@ body {
 }
 
 #players .player.traitor .background {
-    background-color: var(--bad);
+    background-color: var(--color-bad);
 }
 
 #players .player.detective .background {
-    background-color: var(--detective);
+    background-color: var(--color-detective);
 }
 
 #players .player.dead .tag {
     color: var(--dead-fg);
     background-color: var(--dead-bg);
+}
+
+
+
+#player-count {
+    position: fixed;
+
 }
 /* PLAYER ICONS END */
 
@@ -379,9 +423,9 @@ body {
 #no-target {
     position: absolute;
 
-    left: 50%;
-    top: 70%;
-    transform: translate(-50%, -50%);
+    left: 8vw;
+    top: 50%;
+    transform: translateY(-50%);
 
     width: 10vw;
     height: 5vw;
@@ -389,25 +433,6 @@ body {
     font-size: 1.5vw;
 }
 /* HAND END */
-
-
-
-/* ICON */
-#icon {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-
-    width: 12.7vw;
-    height: 12.7vw;
-}
-
-#icon img {
-    display: none;
-    width: 90%;
-    height: 90%;
-}
-/* ICON END */
 
 
 
@@ -485,12 +510,12 @@ body {
 .box h6 {
     margin-bottom: 2vw;
 
-    font-family: 'Aclonica', sans-serif;
+    font-family: var(--font-header);
     font-size: 3vw;
     color: var(--announcement-header);
 }
 .box p {
-    font-family: 'Julius Sans One', sans-serif;
+    font-family: var(--font-main);
     font-size: 1vw;
     color: var(--announcement-body);
 }
@@ -521,7 +546,7 @@ body {
 
     width: 100%;
 
-    font-family: 'Acme', sans-serif;
+    font-family: var(--font-announcement);
     font-size: 100px;
     font-weight: bold;
     color: white;
@@ -545,35 +570,54 @@ body {
 #player-info {
     position: fixed;
 
-    top: 0;
-    left: 0;
+    left: 1vw;
+    bottom: 1vw;
 
-    width: 16vw;
+    width: 10vw;
 
-    border-bottom-right-radius: 1vw;
-    background-color: var(--announcement-border);
+    font-family: var(--font-main);
+    font-size: 1vw;
+    color: var(--announcement-body);
+
+    overflow-y: auto;
 
     z-index: 2000;
 }
 
-#player-info-box {
-    margin: 0 1vw 1vw 0;
-    height: calc(100% - 3vw);
+#player-name {
+    position: relative;
+    margin: auto;
 
-    padding: 0 1vw 1vw 1vw;
+    height: 36%;
+    width: 100%;
+    overflow-y: hidden;
 
-    overflow-y: auto;
+    width: 95%;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
 
-    border-bottom-right-radius: 0.6vw;
-    background-color: var(--announcement-bg);
+    color: var(--player-text);
+    font-family: var(--font-main);
+    font-weight: bold;
+    text-align: center;
+    word-wrap: break-word;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    background-color: white;
 }
 
-#player-info-box div {
-    margin-top: 1vw;
+#player-faction {
+    display: none;
+    position: relative;
+    margin: auto;
 
-    font-family: 'Julius Sans One', sans-serif;
-    font-size: 1vw;
-    color: var(--announcement-body);
+    width: 100%;
 }
 /* PLAYER INFO END */
 
@@ -584,7 +628,7 @@ body {
     position: absolute;
 
     top: 0.5vw;
-    left: 17.1vw;
+    left: 1vw;
 
     width: 11vw;
     height: 2vw;
@@ -596,7 +640,7 @@ body {
     position: absolute;
 
     top: 0.5vw;
-    left: 30vw;
+    left: 13vw;
 
     width: 5vw;
     height: 2vw;
@@ -618,30 +662,27 @@ body {
 }
 .page .window {
     position: absolute;
-
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-
-    width: calc(100% - 7vw);
-    height: calc(100% - 4vw);
+    top: 2vh;
+    right: 4vw;
+    bottom: 4vh;
+    left: 4vw;
 
     padding: 1vw;
 
-    overflow-y: scroll;
+    overflow-y: auto;
 
     border: 1vw solid var(--page-border);
     border-radius: 1vw;
     background-color: var(--page-bg);
 }
 .page .window h5 {
-    font-family: 'Wendy One', sans-serif;
+    font-family: var(--font-header);
     font-size: 3vw;
     color: var(--page-header);
     text-align: center;
 }
 .page .window h6 {
-    font-family: 'Julius Sans One', sans-serif;
+    font-family: var(--font-subheader);
     font-size: 2vw;
     font-weight: bold;
     color: var(--page-header);
@@ -649,7 +690,7 @@ body {
 .page .window p {
     margin-top: 1vw;
 
-    font-family: 'Julius Sans One', sans-serif;
+    font-family: var(--font-main);
     font-size: 1vw;
     color: var(--page-body);
 }
@@ -673,7 +714,7 @@ body {
 
     padding: 1vw 0;
 
-    border-radius: 1vw;
+    border-radius: 0.5vw;
     background-color: var(--page-bg-dim);
 }
 
@@ -693,12 +734,12 @@ body {
 #countdown {
     position: fixed;
 
-    left: 0;
-    top: 42%;
-    transform: translateY(-50%);
+    right: 23vw;
+    top: 0;
 }
 
 #countdown p {
+    font-family: var(--font-counter);
     padding-left: 1vw;
     font-size: 5vw;
     color: var(--countdown);
@@ -712,48 +753,64 @@ body {
     position: fixed;
 
     top: 0;
+    bottom: 0;
     right: 0;
 
-    width: 20vw;
-    height: 32vw;
+    width: 18vw;
 
-    border-bottom-left-radius: 1vw;
-    background-color: var(--messages-border);
+    padding: 1vw;
+
+    background-color: var(--messages-bg);
+
+    overflow-y: scroll;
 
     z-index: 2000;
 }
 
-#message-box {
-    margin: 1vw;
-    height: calc(100% - 4vw);
+.message-group {
+    margin-bottom: 1vw;
+    padding: 1vw 0.5vw;
 
-    padding: 1vw;
+    border-radius: 0.5vw;
+    background-color: #00000020;
 
-    overflow-y: auto;
-
-    border-bottom-left-radius: 0.6vw;
-    background-color: var(--messages-bg);
+    transition: height 0.1s;
 }
 
-#message-box .message, #message-box .statement {
+#messages .message, #messages .statement {
+    display: table;
+
     margin-bottom: 0.5vw;
     padding: 0.4vw;
 
-    font-family: 'Julius Sans One', sans-serif;
+    font-family: var(--font-main);
     font-size: 0.9vw;
     line-height: 1.2em;
+
+    max-width: 90%;
 
     border-radius: 0.8vw;
     background-color: var(--message-bg);
 }
-#message-box .message:nth-child(even), #message-box .statement:nth-child(even) {
-background-color: var(--message-bg-alt);
+#messages .message:nth-child(even), #messages .statement:nth-child(even) {
+    background-color: var(--message-bg-alt);
 }
-#message-box .message .sender {
+#messages .message:first-child, #messages .statement:first-child {
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: 1vw;
+    padding-left: 1vw;
+
+    background-color: var(--color-dark);
+}
+#messages .message:last-child, #messages .statement:last-child {
+    margin-bottom: 0;
+}
+#messages .sender {
     font-weight: bold;
     color: var(--message-sender);
 }
-#message-box .message .content, #message-box .content {
+#messages .content {
     text-align: right;
     color: var(--message-content);
 }
@@ -772,7 +829,7 @@ background-color: var(--message-bg-alt);
     -webkit-text-stroke-color: black;
 
     color: var(--title-color);
-    font-family: 'Wendy One', sans-serif;
+    font-family: var(--font-header);
     font-size: 3vw;
     font-style: italic;
 }
@@ -793,7 +850,7 @@ background-color: var(--message-bg-alt);
     height: 24vw;
 
     border-radius: 1vw;
-    background-color: var(--join-border);
+    background-color: var(--announcement-border);
 
     z-index: 10000;
 }
@@ -805,7 +862,7 @@ background-color: var(--message-bg-alt);
     text-align: center;
 
     border-radius: 0.8vw;
-    background-color: var(--join-bg);
+    background-color: var(--announcement-bg);
 }
 
 #join-menu #join-menu-box img {

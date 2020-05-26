@@ -140,7 +140,8 @@ io.on ("connection", (socket) => {
             if (!game.gameIsRunning () && game.getPlayerAddresses ().length >= config.settings.MINIMUM_PLAYER_COUNT)
             {
                 game.startPregame ();
-                game.sendStatementToAllUsers (`A game will begin in ${config.settings.PRE_GAME_TIME} seconds`);
+                game.sendStatementToAllUsers ("New game");
+                game.sendStatementToAllUsers (`A game will begin in ${config.settings.PRE_GAME_TIME} seconds.`);
                 setTimeout (() => {startGame ();}, config.settings.PRE_GAME_TIME * 1000);
             }
         }
@@ -156,6 +157,7 @@ io.on ("connection", (socket) => {
         else
         {
             socket.emit ("success");
+            game.sendStatementTo (address, `You played ${card.title} on ${playerName}.`);
             game.removeCardFromHand (address, card.title);
         }
     });
@@ -314,20 +316,20 @@ function runTurn ()
 
                 if (traitorTeam.length == 1)
                 {
-                    game.sendStatementToAllUsers (`The <span class='bad'>traitor</span> was ${util.formatList (traitorTeam)}.`);
+                    game.sendStatementToAllUsers (`The traitor was ${util.formatList (traitorTeam)}.`);
                 }
                 else
                 {
-                    game.sendStatementToAllUsers (`The <span class='bad'>traitors</span> were ${util.formatList (traitorTeam)}.`);
+                    game.sendStatementToAllUsers (`The traitors were ${util.formatList (traitorTeam)}.`);
                 }
 
                 if (detectiveTeam.length == 1)
                 {
-                    game.sendStatementToAllUsers (`The <span class='detective'>detective</span> was ${util.formatList (detectiveTeam)}.`);
+                    game.sendStatementToAllUsers (`The detective was ${util.formatList (detectiveTeam)}.`);
                 }
                 else if (detectiveTeam.length > 1)
                 {
-                    game.sendStatementToAllUsers (`The <span class='detective'>detectives</span> were ${util.formatList (detectiveTeam)}.`);
+                    game.sendStatementToAllUsers (`The detectives were ${util.formatList (detectiveTeam)}.`);
                 }
 
                 // Reveal all information
@@ -342,6 +344,7 @@ function runTurn ()
                         socket.emit ("revealMultipleDead", deathInfo);
                     }
                 });
+
 
 
                 game.sendStatementToAllUsers ("A new game will begin shortly.");

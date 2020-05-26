@@ -1,25 +1,36 @@
+let currentMessageGroup;
+
 function receiveMessage (sender, content)
 {
+    if (!currentMessageGroup)
+        splitMessages ();
+
     // Add new message
+    let jQueryRef;
     if (sender)
-        $(messageTempl.replace ("@sender", sender).replace ("@content", content)).appendTo ($("#message-box"));
+        jQueryRef = $(messageTempl.replace ("@sender", sender).replace ("@content", content));
     else
-        $(statementTempl.replace ("@content", content)).appendTo ($("#message-box"));
+        jQueryRef = $(statementTempl.replace ("@content", content));
+
+    jQueryRef.appendTo (currentMessageGroup);
+    jQueryRef.hide ();
+    jQueryRef.slideDown (100);
 
     // Fix scroll height to the bottom of the messages
-    $("#message-box")[0].scrollTop = $("#message-box")[0].scrollHeight;
+    $("#messages")[0].scrollTop = $("#messages")[0].scrollHeight;
 }
 
 function splitMessages ()
 {
     // Add new divider
-    $("<hr>").appendTo ($("#message-box"));
+    currentMessageGroup = $("<div class='message-group'></div>");
+    currentMessageGroup.appendTo ($("#messages"));
 
     // Fix scroll height to the bottom of the messages
-    $("#message-box")[0].scrollTop = $("#message-box")[0].scrollHeight;
+    $("#messages")[0].scrollTop = $("#messages")[0].scrollHeight;
 }
 
 function clearMessages ()
 {
-    $("#message-box").empty ();
+    $("#messages").empty ();
 }

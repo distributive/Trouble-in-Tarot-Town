@@ -25,16 +25,16 @@ $(document).ready (function () {
 
 function showTurnCount (turnNumber)
 {
-    $("#turn-counter p").html ("Turn " + turnNumber);
-    $("#turn-counter").show (250, "swing");
-    setTimeout (() => {$("#turn-counter").hide (250, "swing")}, 2000);
+    // $("#turn-counter p").html ("Turn " + turnNumber);
+    // $("#turn-counter").show (250, "swing");
+    // setTimeout (() => {$("#turn-counter").hide (250, "swing")}, 2000);
 }
 
 function showEndGame (didWin)
 {
-    $("#turn-counter p").html ((didWin) ? "You won!" : "You lost");
-    $("#turn-counter").show (250, "swing");
-    setTimeout (() => {$("#turn-counter").hide (250, "swing")}, 2000);
+    // $("#turn-counter p").html ((didWin) ? "You won!" : "You lost");
+    // $("#turn-counter").show (250, "swing");
+    // setTimeout (() => {$("#turn-counter").hide (250, "swing")}, 2000);
 }
 
 

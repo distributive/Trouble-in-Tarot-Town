@@ -158,37 +158,47 @@ function generateDetectiveDeck (detectiveCount, shuffled = true)
     return deck;
 }
 
+function getDeadCard ()
+{
+    return cardDead;
+}
+
 function getCardDex ()
 {
     return [
         {
             header: "ID cards",
-            description: "Available roles",
+            description: "Available roles:",
             cards: util.removeDuplicates (generateRoleDeck (1, 1, 1, false))
         },
         {
             header: "Innocent cards",
-            description: "Cards available to innocents",
+            description: "Cards available to innocents:",
             cards: util.removeDuplicates (generateInnocentDeck (1, false))
         },
         {
             header: "Traitor cards",
-            description: "Cards available to traitors",
+            description: "Cards available to traitors:",
             cards: util.removeDuplicates (generateTraitorDeck (1, false))
         },
         {
             header: "Detective cards",
-            description: "Cards available to detectives",
+            description: "Cards available to detectives:",
             cards: util.removeDuplicates (generateDetectiveDeck (1, false))
+        },
+        {
+            header: "Dead card",
+            description: "When you are dead, you only draw this card. Every turn you must target another player with it:",
+            cards: util.removeDuplicates ([getDeadCard ()])
         }
     ];
 }
 
 
 
-function getDeadCard ()
+function isPlayableCardTitle (cardTitle)
 {
-    return cardDead;
+    return Object.keys (cards).some ((cardTitle) => cardTitle == cardTitle);
 }
 
 function isIdCard (card)
@@ -241,9 +251,10 @@ module.exports = {
     generateInnocentDeck,
     generateTraitorDeck,
     generateDetectiveDeck,
+    getDeadCard,
     getCardDex,
 
-    getDeadCard,
+    isPlayableCardTitle,
     isIdCard,
     isIdCardTitle,
     isDeadCard,

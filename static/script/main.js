@@ -10,7 +10,7 @@ $(document).ready (function () {
     setNoTargetButton (false);
 
     // Scroll to the bottom of the message log
-    $("#message-box")[0].scrollTop = $("#message-box")[0].scrollHeight;
+    $("#messages")[0].scrollTop = $("#messages")[0].scrollHeight;
 });
 
 function update ()
