@@ -9,6 +9,8 @@ function hideRules ()
 
 function fillCardDex (cardDex)
 {
+    $("#cards").empty ();
+
     cardDex.forEach ((faction, i) => {
         let cards = "";
         faction.cards.forEach ((card, i) => {
