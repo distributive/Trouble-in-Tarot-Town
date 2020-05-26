@@ -24,6 +24,11 @@ function Hand (cards)
         this.cards.map (card => card.jQueryRef.remove ());
         this.cards = [];
     }
+    this.getCardWithTitle = (title) =>
+    {
+        let cards = this.cards.filter (card => card.cardInfo.title == title);
+        return (cards.length > 0) ? cards[0] : null;
+    }
 
     /* UI */
     this.positionCards = () =>

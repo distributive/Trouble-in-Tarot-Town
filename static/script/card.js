@@ -72,6 +72,11 @@ function CardObject (jQueryRef, cardInfo)
             hand.selectedCard = this;
         hand.positionCards ();
     };
+    this.forceToBeSelected = () =>
+    {
+        hand.selectedCard = this;
+        hand.positionCards ();
+    };
 
     this.placeInSelectionArea = () =>
     {
@@ -94,12 +99,18 @@ function CardObject (jQueryRef, cardInfo)
     {
         let [x, y] = playerObject.getPosition ();
         this.setPos (x, y);
+        this.setRot (0);
         this.setWidth (0);
+
+        setTimeout (() => {this.jQueryRef.remove ();}, 5000);
     };
     this.sendToNoOne = () =>
     {
         this.setPos ($(document).width () / 2, $(document).height () / 2);
+        this.setRot (0);
         this.setWidth (0);
+
+        setTimeout (() => {this.jQueryRef.remove ();}, 5000);
     }
 
     this.isSelected = () =>

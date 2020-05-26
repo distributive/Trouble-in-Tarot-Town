@@ -136,6 +136,24 @@ socket.on ("setCards", (cards) => {
     });
 });
 
+socket.on ("forcePlay", (move) => {
+    let cardObject = hand.getCardWithTitle (move.card.title);
+    if (cardObject == null)
+        return;
+
+    let targetPlayer = getPlayerWithName (move.target);
+
+    hand.selectedCard = null;
+
+    if (targetPlayer)
+        cardObject.sendToPlayer (targetPlayer);
+    else
+        cardObject.sendToNoOne (targetPlayer);
+
+    hand.remove (cardObject);
+    hand.positionCards ();
+});
+
 socket.on ("endGame", (didWin) => {
     showEndGame (didWin);
     hideKilled ();

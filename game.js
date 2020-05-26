@@ -516,12 +516,11 @@ function randomiseRemainingMoves ()
         moves[address] = new Move (address, target, card.title);
         removeCardFromHand (address, card.title);
 
-        let socket = getSocketOf (address);
-        if (socket != null) // TEMP
+        if (!isBot (address))
         {
             sendStatementTo (address, "You did not perform an action in time, so your action was performed randomly.", false);
             sendStatementTo (address, `You played ${card.title} on ${getNameOf (target)}.`, false);
-            socket.emit ("forcePlay"); // TODO
+            getSocketOf (address).emit ("forcePlay", {"card": card, "target": getNameOf (target)});
         }
     });
 }
