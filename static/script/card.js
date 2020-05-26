@@ -1,4 +1,9 @@
-let CARD_ASPECT = 7/5;
+const CARD_ASPECT = 7/5;
+const HAND_MAX_WIDTH = 20;
+const CARD_MAX_SEPARATION = 10;
+const CARD_MAX_ANGLE = 40;
+const CARD_WIDTH_IN_HAND = 8.5;
+const CARD_WIDTH_SELECTED = 14;
 
 
 
@@ -14,7 +19,7 @@ function createCard (cardInfo)
 
 function createCardObject (cardInfo)
 {
-    let jQueryRef = createCard (cardInfo).appendTo ($("#toolbar-box"));
+    let jQueryRef = createCard (cardInfo).appendTo ($("#hand"));
     return new CardObject (jQueryRef, cardInfo);
 }
 
@@ -33,10 +38,7 @@ function CardObject (jQueryRef, cardInfo)
     };
     this.setRot = (angle) =>
     {
-        this.jQueryRef.css ({'-webkit-transform' : 'rotate('+ angle + 'deg)',
-                             '-moz-transform'    : 'rotate('+ angle + 'deg)',
-                             '-ms-transform'     : 'rotate('+ angle + 'deg)',
-                             'transform'         : 'rotate('+ angle + 'deg)'});
+        this.jQueryRef.css ({"transform": `translate(-50%, 50%) rotate(${angle}deg)`});
     };
     this.setWidth = (width) =>
     {
@@ -53,7 +55,6 @@ function CardObject (jQueryRef, cardInfo)
     this.jQueryRef.click ((event) => {
         event.stopPropagation ();
         this.select ();
-        // this.sendToPlayer (players[0]);
     });
     this.jQueryRef.mouseenter (() => {
 
@@ -75,12 +76,19 @@ function CardObject (jQueryRef, cardInfo)
     this.placeInSelectionArea = () =>
     {
         this.setPos ($(document).width () / 2, $(document).height () / 2);
-        this.setWidth (14);
+        this.setRot (0);
+        this.setWidth (CARD_WIDTH_SELECTED);
     }
     this.placeInHand = (handIndex) =>
     {
-        this.setPos ((handIndex * 12.5 + 8) + "vw", "6.25vw");
-        this.setWidth (8.5);
+        let separation = Math.min (CARD_MAX_SEPARATION, HAND_MAX_WIDTH / (hand.cards.length - 1));
+
+        let x = handIndex - (hand.cards.length)/2 + 1/2;
+        let y = 1 - ((x == 0) ? separation / 10 : Math.abs (x*separation) / 7); // Bleurgh
+
+        this.setPos ((50 + x * separation) + "vw", y + "vw");
+        this.setRot (2 * CARD_MAX_ANGLE * x / HAND_MAX_WIDTH);
+        this.setWidth (CARD_WIDTH_IN_HAND);
     };
     this.sendToPlayer = (playerObject) =>
     {

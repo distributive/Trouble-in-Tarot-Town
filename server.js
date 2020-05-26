@@ -140,7 +140,7 @@ io.on ("connection", (socket) => {
             if (!game.gameIsRunning () && game.getPlayerAddresses ().length >= config.settings.MINIMUM_PLAYER_COUNT)
             {
                 game.startPregame ();
-                game.sendStatementToAllUsers (`A game will begin in ${config.settings.PRE_GAME_TIME} seconds`, false);
+                game.sendStatementToAllUsers (`A game will begin in ${config.settings.PRE_GAME_TIME} seconds`);
                 setTimeout (() => {startGame ();}, config.settings.PRE_GAME_TIME * 1000);
             }
         }
@@ -229,8 +229,10 @@ function runTurn ()
     io.emit ("startTurn", game.getTurn ());
 
     game.getPlayerAddresses ().forEach ((address, i) => {
-        if (game.getSocketOf (address) !== null) // Temp
-            game.getSocketOf (address).emit ("setCards", game.getCardsOf (address));
+        if (!game.isBot (address))
+        {
+            game.getSocketOf (address).emit ("drawCard", game.getCardsOf (address).slice (-1)[0]);
+        }
     });
 
     let timeLeft = config.settings.TURN_TIME_LIMIT;

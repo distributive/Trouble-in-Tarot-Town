@@ -43,11 +43,6 @@
     --button-click-text: #4c475a;
     --button-inactive-text: #0000;
 
-    --toolbar-height: 12.7vw;
-    --toolbar-border-width: 1vw;
-    --toolbar-border: #2a2732;
-    --toolbar-bg: #1e192b;
-
     --messages-border: #2a2732;
     --messages-bg: #1e192b;
     --message-bg: #160f26;
@@ -255,17 +250,17 @@ body {
     width: 100%;
 }
 
-#toolbar .card {
+#hand .card {
     transition: left 0.1s, bottom 0.1s, width 0.1s, padding-top 0.1s, border-radius 0.1s;
 }
-#toolbar .card:hover {
+#hand .card:hover {
     border-radius: 1.56em;
     box-shadow: 0 0 20px var(--card-hover-glow);
 }
-#toolbar .card .title-box {
+#hand .card .title-box {
     transition: font-size 0.1s;
 }
-#toolbar .card .text-box {
+#hand .card .text-box {
     transition: font-size 0.1s;
 }
 /* CARDS END */
@@ -372,42 +367,28 @@ body {
 
 
 
-/* TOOLBAR */
-#toolbar {
+/* HAND */
+#hand {
     position: absolute;
     bottom: 0;
-    left: 0;
-    right: 20%;
-
-    height: calc(var(--toolbar-height) + var(--toolbar-border-width));
-
-    border-top-right-radius: 1vw;
-    background-color: var(--toolbar-border);
+    left: 50%;
 
     z-index: 100;
-}
-#toolbar #toolbar-box {
-    margin-top: var(--toolbar-border-width);
-    margin-right: var(--toolbar-border-width);
-    height: var(--toolbar-height);
-
-    border-top-right-radius: 0.6vw;
-    background-color: var(--toolbar-bg);
 }
 
 #no-target {
     position: absolute;
 
-    right: 4vw;
-    top: 50%;
-    transform: translateY(-40%);
+    left: 50%;
+    top: 70%;
+    transform: translate(-50%, -50%);
 
     width: 10vw;
     height: 5vw;
 
     font-size: 1.5vw;
 }
-/* TOOLBAR END */
+/* HAND END */
 
 
 
@@ -417,8 +398,8 @@ body {
     right: 0;
     bottom: 0;
 
-    width: var(--toolbar-height);
-    height: var(--toolbar-height);
+    width: 12.7vw;
+    height: 12.7vw;
 }
 
 #icon img {

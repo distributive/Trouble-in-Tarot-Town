@@ -9,9 +9,6 @@ $(document).ready (function () {
     // Disable no-target button
     setNoTargetButton (false);
 
-    hideRules ();
-    hideCardDex ();
-
     // Scroll to the bottom of the message log
     $("#message-box")[0].scrollTop = $("#message-box")[0].scrollHeight;
 });

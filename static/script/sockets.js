@@ -131,7 +131,7 @@ socket.on ("drawCard", (card) => {
 
 socket.on ("setCards", (cards) => {
     hand.clear ();
-    cards.forEach((card, i) => {
+    cards.forEach ((card, i) => {
         drawCard (card);
     });
 });
