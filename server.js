@@ -157,7 +157,10 @@ io.on ("connection", (socket) => {
         else
         {
             socket.emit ("success");
-            game.sendStatementTo (address, `You played ${card.title} on ${playerName}.`);
+            if (playerName)
+                game.sendStatementTo (address, `You played '${card.title}' on ${playerName}.`);
+            else
+                game.sendStatementTo (address, `You played '${card.title}'.`);
             game.removeCardFromHand (address, card.title);
         }
     });
