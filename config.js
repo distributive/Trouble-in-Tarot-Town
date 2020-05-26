@@ -58,11 +58,9 @@ function loadSettings ()
 }
 function loadDefaults ()
 {
-    settings = {};
     Object.keys (defaultSettings).forEach((key, i) => {
         settings[key] = defaultSettings[key];
     });
-
 }
 function loadDefault (setting)
 {
