@@ -515,6 +515,13 @@ function randomiseRemainingMoves ()
             card = util.shuffle (users[address].hand.slice (1))[0]; // Slice (1) to remove ID
         }
 
+        if (!card)
+        {
+            console.error ("OH NO");
+            console.error (isDead (address));
+            console.error (target);
+        }
+
         target = (cards.isTargettedTitle (card.title)) ? util.shuffle (playerAddresses.filter (a => a != address))[0] : null;
 
         moves[address] = new Move (address, target, card.title);

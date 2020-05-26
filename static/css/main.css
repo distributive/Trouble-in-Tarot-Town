@@ -687,12 +687,15 @@ body {
     font-weight: bold;
     color: var(--page-header);
 }
-.page .window p {
+.page .window p, .page .window li {
     margin-top: 1vw;
 
     font-family: var(--font-main);
     font-size: 1vw;
     color: var(--page-body);
+}
+.page .window li {
+    margin-left: 2em;
 }
 
 .page .button {
@@ -725,6 +728,36 @@ body {
     margin-left: 2vw;
 
     transform: translate(0, 0);
+}
+
+#rules img {
+    margin: 2vw;
+    border: 0.1vw solid black;
+}
+
+#rules img.large {
+    width: 36vw;
+}
+#rules img.big {
+    width: 30vw;
+}
+#rules img.medium {
+    width: 20vw;
+}
+#rules img.small {
+    width: 14vw;
+}
+
+#rules img.left {
+    float: left;
+}
+#rules img.centre {
+    display: block;
+    margin: auto;
+    float: none;
+}
+#rules img.right {
+    float: right;
 }
 /* PAGES END */
 
