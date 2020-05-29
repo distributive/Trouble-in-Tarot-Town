@@ -12,6 +12,7 @@
 
     --color-important: #ff0700;
     --color-highlight: #a8df65;
+    --color-info: #45046a;
 
     --color-message: #306057;
     --color-message-alt: #303960;
@@ -63,6 +64,9 @@
     --messages-bg: var(--color-grey);
     --message-bg: var(--color-message);
     --message-bg-alt: var(--color-message-alt);
+    --message-bg-header: var(--color-dark);
+    --message-bg-info: var(--color-info);
+    --message-bg-server: grey;
     --message-sender: var(--color-light);
     --message-content: var(--color-light);
 
@@ -828,13 +832,19 @@ body {
 #messages .message:nth-child(even), #messages .statement:nth-child(even) {
     background-color: var(--message-bg-alt);
 }
-#messages .message:first-child, #messages .statement:first-child {
-    margin-right: auto;
+#messages .message.header, #messages .statement.header {
     margin-left: auto;
+    margin-right: auto;
     padding-right: 1vw;
     padding-left: 1vw;
 
-    background-color: var(--color-dark);
+    background-color: var(--message-bg-header);
+}
+#messages .message.info, #messages .statement.info {
+    background-color: var(--message-bg-info);
+}
+#messages .message.server, #messages .statement.server {
+    background-color: var(--message-bg-server);
 }
 #messages .message:last-child, #messages .statement:last-child {
     margin-bottom: 0;

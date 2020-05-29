@@ -3,10 +3,10 @@ let token = "";
 
 /* MESSAGES */
 socket.on ("message", (content) => {
-    if (content.divider)
+    if (content.isDivider)
         splitMessages ();
 
-    receiveMessage (content.sender, content.message);
+    receiveMessage (content.sender, content.message, content.type);
 });
 /* MESSAGES END */
 

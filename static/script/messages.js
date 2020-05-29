@@ -1,6 +1,6 @@
 let currentMessageGroup;
 
-function receiveMessage (sender, content)
+function receiveMessage (sender, content, type)
 {
     if (!currentMessageGroup)
         splitMessages ();
@@ -12,12 +12,12 @@ function receiveMessage (sender, content)
     else
         jQueryRef = $(statementTempl.replace ("@content", content));
 
+    if (type)
+        jQueryRef.addClass (type);
+
     jQueryRef.appendTo (currentMessageGroup);
     jQueryRef.hide ();
-    jQueryRef.slideDown (100);
-
-    // Fix scroll height to the bottom of the messages
-    $("#messages")[0].scrollTop = $("#messages")[0].scrollHeight;
+    jQueryRef.slideDown (100, slideToBottom);
 }
 
 function splitMessages ()
@@ -27,10 +27,15 @@ function splitMessages ()
     currentMessageGroup.appendTo ($("#messages"));
 
     // Fix scroll height to the bottom of the messages
-    $("#messages")[0].scrollTop = $("#messages")[0].scrollHeight;
+    slideToBottom ();
 }
 
 function clearMessages ()
 {
     $("#messages").empty ();
+}
+
+function slideToBottom ()
+{
+    $("#messages")[0].scrollTop = $("#messages")[0].scrollHeight
 }

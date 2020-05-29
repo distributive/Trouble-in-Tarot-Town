@@ -112,62 +112,62 @@ function isBot (address)
     return users[address].socket == null;
 }
 
-function sendMessageTo (address, sender, message, storeInLog = true, isDivider = false)
+function sendMessageTo (address, sender, message, storeInLog = true, isDivider = false, type = "")
 {
     if (!hasUser (address) || users[address].socket == null)
         return;
 
-    let content = {"sender": sender, "message": message, "isDivider": isDivider};
+    let content = {"sender": sender, "message": message, "isDivider": isDivider, "type": type};
 
     if (storeInLog)
         users[address].messages.push (content);
     users[address].socket.emit ("message", content);
 }
 
-function sendStatementTo (address, message, storeInLog = true, isDivider = false)
+function sendStatementTo (address, message, storeInLog = true, isDivider = false, type = "")
 {
     if (!hasUser (address) || users[address].socket == null)
         return;
 
-    let content = {"sender": null, "message": message, "isDivider": isDivider};
+    let content = {"sender": null, "message": message, "isDivider": isDivider, "type": type};
 
     if (storeInLog)
         users[address].messages.push (content);
     users[address].socket.emit ("message", content);
 }
 
-function sendStatementToAllUsers (message, storeInLog = true, isDivider = false)
+function sendStatementToAllUsers (message, storeInLog = true, isDivider = false, type = "")
 {
     Object.keys (users).forEach ((address, i) => {
-        sendStatementTo (address, message, storeInLog, isDivider);
+        sendStatementTo (address, message, storeInLog, isDivider, type);
     });
 }
 
-function sendStatementToAllOtherUsers (message, address, storeInLog = true, isDivider = false)
+function sendStatementToAllOtherUsers (message, address, storeInLog = true, isDivider = false, type = "")
 {
     Object.keys (users).filter (user => user != address).forEach ((address, i) => {
-        sendStatementTo (address, message, storeInLog, isDivider);
+        sendStatementTo (address, message, storeInLog, isDivider, type);
     });
 }
 
-function sendStatementToAllPlayers (message, storeInLog = true, isDivider = false)
+function sendStatementToAllPlayers (message, storeInLog = true, isDivider = false, type = "")
 {
     playerAddresses.forEach ((address, i) => {
-        sendStatementTo (address, message, storeInLog, isDivider);
+        sendStatementTo (address, message, storeInLog, isDivider, type);
     });
 }
 
-function sendStatementToAllOtherPlayers (message, address, storeInLog = true, isDivider = false)
+function sendStatementToAllOtherPlayers (message, address, storeInLog = true, isDivider = false, type = "")
 {
     playerAddresses.filter (user => user != address).forEach ((address, i) => {
-        sendStatementTo (address, message, storeInLog, isDivider);
+        sendStatementTo (address, message, storeInLog, isDivider, type);
     });
 }
 
-function sendStatementToAllPlayersOfFaction (message, faction, storeInLog = true, isDivider = false)
+function sendStatementToAllPlayersOfFaction (message, faction, storeInLog = true, isDivider = false, type = "")
 {
     playerAddresses.filter (a => getFactionOf (a) == faction).forEach ((address, i) => {
-        sendStatementTo (address, message, storeInLog, isDivider);
+        sendStatementTo (address, message, storeInLog, isDivider, type);
     });
 }
 
@@ -184,7 +184,7 @@ function resendMessageLogOf (address)
     let socket = getSocketOf (address);
 
     getMessageLogOf (address).forEach ((message, i) => {
-        socket.emit ("message", {"sender": message.sender, "message": message.message, "isDivider": message.isDivider});
+        socket.emit ("message", {"sender": message.sender, "message": message.message, "isDivider": message.isDivider, "type": message.type});
     });
 }
 /* USERS END */

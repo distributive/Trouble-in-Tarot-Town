@@ -86,7 +86,7 @@ io.on ("connection", (socket) => {
         }
 
         // Inform other users you have reconencted
-        game.sendStatementToAllOtherUsers (`${game.getNameOf (address)} has reconnected.`, address, false);
+        game.sendStatementToAllOtherUsers (`${game.getNameOf (address)} has reconnected.`, address, false, false, "server");
     }
     else
     {
@@ -106,7 +106,7 @@ io.on ("connection", (socket) => {
 
         // Inform other users you have disconnected
         if (game.userIsPlaying (address))
-            game.sendStatementToAllOtherUsers (`${game.getNameOf (address)} has disconected.`, address, false);
+            game.sendStatementToAllOtherUsers (`${game.getNameOf (address)} has disconected.`, address, false, false, "server");
     });
 
     socket.on ("attemptJoin", (name) => {
@@ -138,13 +138,13 @@ io.on ("connection", (socket) => {
             });
 
             // Inform other players you have joined
-            game.sendStatementToAllOtherUsers (`${game.getNameOf (address)} has joined.`, address, false);
+            game.sendStatementToAllOtherUsers (`${game.getNameOf (address)} has joined.`, address, false, false, "server");
 
             // If enough players are online, start a game
             if (!game.gameIsRunning () && game.numberOfPotentialPlayers () >= config.settings.MINIMUM_PLAYER_COUNT)
             {
                 game.startPregame ();
-                game.sendStatementToAllUsers ("New game");
+                game.sendStatementToAllUsers ("New game", true, true, "header");
                 game.sendStatementToAllUsers (`A game will begin in ${config.settings.PRE_GAME_TIME} seconds.`);
                 setTimeout (() => {startGame ();}, config.settings.PRE_GAME_TIME * 1000);
             }
@@ -187,7 +187,7 @@ function startGame ()
     game.startGame ();
 
     io.emit ("startGame");
-    game.sendStatementToAllUsers ("A game has begun!", true, true);
+    game.sendStatementToAllUsers ("A game has begun!", true, true, "header");
 
     // Set current player set for each player
     game.getPlayerAddresses ().forEach ((address, i) => {
@@ -225,7 +225,7 @@ function runTurn ()
 {
     game.startTurn ();
 
-    game.sendStatementToAllUsers (`Turn ${game.getTurn (0)} has begun.`, true, true);
+    game.sendStatementToAllUsers (`Turn ${game.getTurn (0)} has begun.`, true, true, "header");
     io.emit ("startTurn", game.getTurn ());
 
     game.getPlayerAddresses ().forEach ((address, i) => {
@@ -262,7 +262,7 @@ function runTurn ()
                 {
                     // Send text results of actions
                     results[address].messages.forEach ((message, j) => {
-                        game.sendStatementTo (address, message);
+                        game.sendStatementTo (address, message, true, false, "info");
                     });
 
                     // Update the known dead of each player
