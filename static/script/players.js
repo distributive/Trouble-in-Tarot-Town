@@ -1,5 +1,5 @@
 let players = [];
-let ARC_ANGLE = 276;
+let ARC_ANGLE = 330;
 let ARC_RADIUS = 400;
 
 function createPlayer (name, isActive)
