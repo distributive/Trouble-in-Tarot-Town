@@ -40,7 +40,7 @@ if (botCount > 0)
     for (let i = 0; i < botCount; i++)
     {
         game.addUser (i+"", null);
-        game.addPlayer (i+"", BOT_NAMES[i]);
+        game.nameUser (i+"", BOT_NAMES[i]);
     }
 }
 
@@ -70,7 +70,7 @@ io.on ("connection", (socket) => {
     game.resendMessageLogOf (address); // In case they are a returning user
 
     // Detect if they're already playing (reconnection)
-    if (game.userIsPlaying (address))
+    if (game.userHasJoined (address))
     {
         socket.emit ("alreadyJoined");
         socket.emit ("setPlayers", {otherPlayers: game.getOtherPublicPlayerData (address), isPlaying: true, gameIsRunning: game.gameIsRunning ()});
@@ -119,9 +119,13 @@ io.on ("connection", (socket) => {
         {
             socket.emit ("joinError", "Name is already taken.");
         }
+        else if (game.getNameOf (address) != "")
+        {
+            socket.emit ("joinError", "You already have a name. If this is an unexpected result, please report this error.");
+        }
         else
         {
-            game.addPlayer (address, name);
+            game.nameUser (address, name);
             socket.emit ("joinAccepted", address);
             socket.emit ("setName", name);
 
@@ -137,7 +141,7 @@ io.on ("connection", (socket) => {
             game.sendStatementToAllOtherUsers (`${game.getNameOf (address)} has joined.`, address, false);
 
             // If enough players are online, start a game
-            if (!game.gameIsRunning () && game.getPlayerAddresses ().length >= config.settings.MINIMUM_PLAYER_COUNT)
+            if (!game.gameIsRunning () && game.numberOfPotentialPlayers () >= config.settings.MINIMUM_PLAYER_COUNT)
             {
                 game.startPregame ();
                 game.sendStatementToAllUsers ("New game");
@@ -172,17 +176,8 @@ function startGame ()
     if (game.gameIsInProgress ())
         return;
 
-    // Purge disconnected players
-    game.getPlayerAddresses ().forEach((address, i) => {
-        if (!game.userIsConnected (address))
-        {
-            game.sendStatementToAllUsers (`${game.getNameOf (address)} was disconnected and has been removed from the game.`);
-            game.removeUser (address);
-        }
-    });
-
     // Check a game is viable
-    if (game.getPlayerAddresses ().length < config.settings.MINIMUM_PLAYER_COUNT)
+    if (game.numberOfPotentialPlayers () < config.settings.MINIMUM_PLAYER_COUNT)
     {
         game.sendStatementToAllUsers ("There are not enough players online for a game. Waiting for more players.");
         return;

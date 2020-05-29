@@ -8,7 +8,6 @@ const GAME_PREGAME = 2;
 const GAME_POSTGAME = 3;
 
 let users = {};
-let playerAddresses = [];
 let gameState = GAME_NO_GAME;
 
 
@@ -29,6 +28,8 @@ function User (address, socket)
     this.hand = [];
     this.messages = [];
     this.knownDead = [];
+    this.inGame = false;
+    this.spectating = false;
 }
 
 
@@ -47,6 +48,14 @@ function addUser (address, socket)
     }
 }
 
+function nameUser (address, name)
+{
+    if (!hasUser (address))
+        return;
+
+    users[address].name = name;
+}
+
 function disconnectUser (address)
 {
     if (hasUser (address))
@@ -62,6 +71,11 @@ function removeUser (address)
 function hasUser (address)
 {
     return users.hasOwnProperty (address);
+}
+
+function userHasJoined (address)
+{
+    return (hasUser (address) && users[address].name != "");
 }
 
 function userIsConnected (address)
@@ -98,62 +112,62 @@ function isBot (address)
     return users[address].socket == null;
 }
 
-function sendMessageTo (address, sender, message, storeInLog = true)
+function sendMessageTo (address, sender, message, storeInLog = true, isDivider = false)
 {
     if (!hasUser (address) || users[address].socket == null)
         return;
 
-    let content = {"sender": sender, "message": message, "divider": divider};
+    let content = {"sender": sender, "message": message, "isDivider": isDivider};
 
     if (storeInLog)
         users[address].messages.push (content);
     users[address].socket.emit ("message", content);
 }
 
-function sendStatementTo (address, message, storeInLog = true, divider = false)
+function sendStatementTo (address, message, storeInLog = true, isDivider = false)
 {
     if (!hasUser (address) || users[address].socket == null)
         return;
 
-    let content = {"sender": null, "message": message, "divider": divider};
+    let content = {"sender": null, "message": message, "isDivider": isDivider};
 
     if (storeInLog)
         users[address].messages.push (content);
     users[address].socket.emit ("message", content);
 }
 
-function sendStatementToAllUsers (message, storeInLog = true, divider = false)
+function sendStatementToAllUsers (message, storeInLog = true, isDivider = false)
 {
-    Object.keys (users).forEach((address, i) => {
-        sendStatementTo (address, message, storeInLog, divider);
+    Object.keys (users).forEach ((address, i) => {
+        sendStatementTo (address, message, storeInLog, isDivider);
     });
 }
 
-function sendStatementToAllOtherUsers (message, address, storeInLog = true, divider = false)
+function sendStatementToAllOtherUsers (message, address, storeInLog = true, isDivider = false)
 {
-    Object.keys (users).filter (user => user != address).forEach((address, i) => {
-        sendStatementTo (address, message, storeInLog, divider);
+    Object.keys (users).filter (user => user != address).forEach ((address, i) => {
+        sendStatementTo (address, message, storeInLog, isDivider);
     });
 }
 
-function sendStatementToAllPlayers (message, storeInLog = true, divider = false)
+function sendStatementToAllPlayers (message, storeInLog = true, isDivider = false)
 {
-    playerAddresses.forEach((address, i) => {
-        sendStatementTo (address, message, storeInLog, divider);
+    playerAddresses.forEach ((address, i) => {
+        sendStatementTo (address, message, storeInLog, isDivider);
     });
 }
 
-function sendStatementToAllOtherPlayers (message, address, storeInLog = true, divider = false)
+function sendStatementToAllOtherPlayers (message, address, storeInLog = true, isDivider = false)
 {
-    playerAddresses.filter (user => user != address).forEach((address, i) => {
-        sendStatementTo (address, message, storeInLog, divider);
+    playerAddresses.filter (user => user != address).forEach ((address, i) => {
+        sendStatementTo (address, message, storeInLog, isDivider);
     });
 }
 
-function sendStatementToAllPlayersOfFaction (message, faction, storeInLog = true, divider = false)
+function sendStatementToAllPlayersOfFaction (message, faction, storeInLog = true, isDivider = false)
 {
-    playerAddresses.filter (a => getFactionOf (a) == faction).forEach((address, i) => {
-        sendStatementTo (address, message, storeInLog, divider);
+    playerAddresses.filter (a => getFactionOf (a) == faction).forEach ((address, i) => {
+        sendStatementTo (address, message, storeInLog, isDivider);
     });
 }
 
@@ -170,7 +184,7 @@ function resendMessageLogOf (address)
     let socket = getSocketOf (address);
 
     getMessageLogOf (address).forEach ((message, i) => {
-        socket.emit ("message", {"sender": message.sender, "message": message.message, "divider": message.divider});
+        socket.emit ("message", {"sender": message.sender, "message": message.message, "isDivider": message.isDivider});
     });
 }
 /* USERS END */
@@ -178,26 +192,30 @@ function resendMessageLogOf (address)
 
 
 /* PLAYERS */
-function addPlayer (address, name)
-{
-    if (!hasUser (address) || playerAddresses.includes (address))
-        return;
-
-    users[address].name = name;
-    playerAddresses.push (address);
-}
-
-function removePlayer (address)
+function addPlayerToGame (address)
 {
     if (!hasUser (address))
         return;
 
-    playerAddresses = playerAddresses.filter (e => e != address);
+    users[address].inGame = true;
+}
+
+function kickPlayer (address)
+{
+    if (!hasUser (address))
+        return;
+
+    users[address].inGame = false;
+}
+
+function numberOfPotentialPlayers ()
+{
+    return Object.keys (users).filter (address => users[address].online && !users[address].spectating).length;
 }
 
 function getPlayerAddresses ()
 {
-    return playerAddresses.filter (_ => true);
+    return Object.keys (users).filter (address => users[address].inGame);
 }
 
 function userIsPlaying (address)
@@ -205,7 +223,7 @@ function userIsPlaying (address)
     if (!hasUser (address))
         return false;
 
-    return playerAddresses.includes (address);
+    return users[address].inGame;
 }
 
 function getNameOf (address)
@@ -218,26 +236,26 @@ function getNameOf (address)
 
 function getPlayerNames ()
 {
-    return playerAddresses.map (p => users[p].name);
+    return getPlayerAddresses ().map (p => users[p].name);
 }
 function getOtherPlayerNames (address)
 {
-    return playerAddresses.filter (p => users[p].address != address).map (p => users[p].name);
+    return getPlayerAddresses ().filter (p => users[p].address != address).map (p => users[p].name);
 }
 
 function getPublicPlayerData () // returns name and whether they're a spectator for each player
 {
-    return playerAddresses.map ((p) => {return {"name": users[p].name, "isActive": users[p].team != "spectator"}});
+    return getPlayerAddresses ().map ((p) => {return {"name": users[p].name, "isActive": users[p].team != "spectator"}});
 }
 function getOtherPublicPlayerData (address)
 {
-    return playerAddresses.filter (p => users[p].address != address).map ((p) => {return {"name": users[p].name, "isActive": users[p].team != "spectator"}});
+    return getPlayerAddresses ().filter (p => users[p].address != address).map ((p) => {return {"name": users[p].name, "isActive": users[p].team != "spectator"}});
 }
 
 function thereExistsPlayerWithName (name)
 {
     name = name.toLowerCase ();
-    return playerAddresses.some (p => users[p].name.toLowerCase () == name);
+    return getPlayerAddresses ().some (p => users[p].name.toLowerCase () == name);
 }
 
 function getPlayerAddressWithName (name)
@@ -246,7 +264,7 @@ function getPlayerAddressWithName (name)
         return null;
 
     name = name.toLowerCase ();
-    let results = playerAddresses.filter (a => users[a].name.toLowerCase () == name);
+    let results = getPlayerAddresses ().filter (a => users[a].name.toLowerCase () == name);
 
     if (results.length == 0)
         return null;
@@ -281,12 +299,12 @@ function getFactionWinCon (faction)
 
 function getAddressesOfFaction (faction)
 {
-    return playerAddresses.filter (address => users[address].faction == faction);
+    return getPlayerAddresses ().filter (address => users[address].faction == faction);
 }
 
 function getAddressesOfTeam (team)
 {
-    return playerAddresses.filter (address => users[address].team == team);
+    return getPlayerAddresses ().filter (address => users[address].team == team);
 }
 
 function getCardsOf (address)
@@ -304,12 +322,11 @@ function isDead (address)
 
 function getAllDead ()
 {
-    return playerAddresses.filter (address => isDead (address));
+    return getPlayerAddresses ().filter (address => isDead (address));
 }
-
 function getAllLiving ()
 {
-    return playerAddresses.filter (address => !isDead (address));
+    return getPlayerAddresses ().filter (address => !isDead (address));
 }
 
 function removeCardFromHand (address, cardTitle)
@@ -338,13 +355,14 @@ function getKnownDeadOf (address)
 
 function resetPlayers ()
 {
-    playerAddresses.forEach ((address, i) => {
+    getPlayerAddresses ().forEach ((address, i) => {
         users[address].faction = "spectator";
         users[address].team = "spectator";
         users[address].dead = false;
         users[address].hand = [];
         users[address].messages = [];
         users[address].knownDead = [];
+        users[address].inGame = false;
     });
 }
 /* PLAYERS END */
@@ -415,13 +433,19 @@ function startGame ()
     turn = 0;
     resetPlayers ();
 
-    let traitorCount = Math.ceil (config.settings.TRAITOR_FRACTION * playerAddresses.length + config.settings.TRAITOR_CONSTANT);
-    let detectiveCount = Math.floor (config.settings.DETECTIVE_FRACTION * playerAddresses.length + config.settings.DETECTIVE_CONSTANT);
-    let innocentCount = Math.max (0, playerAddresses.length - traitorCount - detectiveCount);
+    // Add all connected, non-spectating users to the game as players
+    Object.keys (users).forEach ((address, i) => {
+        if (users[address].online && !users[address].spectating)
+            addPlayerToGame (address);
+    });
+
+    let traitorCount = Math.ceil (config.settings.TRAITOR_FRACTION * getPlayerAddresses ().length + config.settings.TRAITOR_CONSTANT);
+    let detectiveCount = Math.floor (config.settings.DETECTIVE_FRACTION * getPlayerAddresses ().length + config.settings.DETECTIVE_CONSTANT);
+    let innocentCount = Math.max (0, getPlayerAddresses ().length - traitorCount - detectiveCount);
 
     let roleDeck = cards.generateRoleDeck (innocentCount, traitorCount, detectiveCount);
 
-    playerAddresses.forEach ((address, i) => {
+    getPlayerAddresses ().forEach ((address, i) => {
         let roleCard = roleDeck.pop ();
         users[address].hand = [roleCard];
         users[address].faction = roleCard.faction;
@@ -436,7 +460,7 @@ function endGame ()
 {
     gameState = GAME_POSTGAME;
 
-    playerAddresses.forEach ((address, i) => {
+    getPlayerAddresses ().forEach ((address, i) => {
         users[address].hand = [];
     });
 }
@@ -446,7 +470,7 @@ function startTurn ()
     turn++;
     moves = {};
 
-    playerAddresses.forEach ((address, i) => {
+    getPlayerAddresses ().forEach ((address, i) => {
         if (isDead (address))
         {
             users[address].hand.push (cards.getDeadCard ());
@@ -458,7 +482,7 @@ function startTurn ()
     });
 }
 
-function attemptMove (source, target, cardTitle, playerAddresses)
+function attemptMove (source, target, cardTitle)
 {
     if (moves.hasOwnProperty (source))
     {
@@ -499,12 +523,12 @@ function attemptMove (source, target, cardTitle, playerAddresses)
 
 function allPlayersMoved ()
 {
-    return playerAddresses.every (address => moves.hasOwnProperty (address));
+    return getPlayerAddresses ().every (address => moves.hasOwnProperty (address));
 }
 
 function randomiseRemainingMoves ()
 {
-    playerAddresses.filter (a => !moves.hasOwnProperty (a)).forEach ((address, i) => {
+    getPlayerAddresses ().filter (a => !moves.hasOwnProperty (a)).forEach ((address, i) => {
         let target, card;
         if (isDead (address))
         {
@@ -522,7 +546,7 @@ function randomiseRemainingMoves ()
             console.error (target);
         }
 
-        target = (cards.isTargettedTitle (card.title)) ? util.shuffle (playerAddresses.filter (a => a != address))[0] : null;
+        target = (cards.isTargettedTitle (card.title)) ? util.shuffle (getPlayerAddresses ().filter (a => a != address))[0] : null;
 
         moves[address] = new Move (address, target, card.title);
         removeCardFromHand (address, card.title);
@@ -542,12 +566,12 @@ function getResultsOfTurn ()
     let killed = [];
 
     // Set up initial state of each player
-    playerAddresses.forEach ((address, i) => {
+    getPlayerAddresses ().forEach ((address, i) => {
         results[address] = new Result (address, isDead (address));
     });
 
     // Jails must be determined first
-    playerAddresses.forEach ((address, i) => {
+    getPlayerAddresses ().forEach ((address, i) => {
         if (moves[address].cardTitle == cards.jailTitle && moves[moves[address].target].cardTitle != cards.jailTitle)
         {
             moves[moves[address].target].cardTitle = cards.nullTitle;
@@ -557,7 +581,7 @@ function getResultsOfTurn ()
     });
 
     // Perform remaining moves in a random order
-    util.shuffle (playerAddresses.filter (a => moves.hasOwnProperty (a))).forEach ((address, i) => {
+    util.shuffle (getPlayerAddresses ().filter (a => moves.hasOwnProperty (a))).forEach ((address, i) => {
         let targetAddress = moves[address].target;
         let targetName = getNameOf (targetAddress);
 
@@ -566,7 +590,7 @@ function getResultsOfTurn ()
             case cards.witnessTitle:
                 // See visits involving the target
                 let visited = moves[targetAddress].target;
-                let visitors = playerAddresses.filter (a => a != address && moves[a].target == targetAddress);
+                let visitors = getPlayerAddresses ().filter (a => a != address && moves[a].target == targetAddress);
 
                 let r1 = (visited == null)    ? `${targetName} did not visit anyone.` :
                          (visited == address) ? `${targetName} visited you.` :
@@ -589,9 +613,9 @@ function getResultsOfTurn ()
                     logDeath (address, targetAddress, false);
 
                     // Detect kills involving the target
-                    let killers = playerAddresses.filter (a => moves[a].target == targetAddress && moves[a].cardTitle == cards.killTitle);
+                    let killers = getPlayerAddresses ().filter (a => moves[a].target == targetAddress && moves[a].cardTitle == cards.killTitle);
                     let victims = (moves[targetAddress].cardTitle == cards.killTitle) ? [moves[targetAddress].target] :
-                                  (moves[targetAddress].cardTitle == cards.c4Title) ? playerAddresses.filter (a => moves[a].target == targetAddress) :
+                                  (moves[targetAddress].cardTitle == cards.c4Title) ? getPlayerAddresses ().filter (a => moves[a].target == targetAddress) :
                                   [];
 
                     // Log deaths
@@ -655,7 +679,7 @@ function getResultsOfTurn ()
             break;
 
             case cards.c4Title:
-                let victims = playerAddresses.filter (a => moves[a].target == address);
+                let victims = getPlayerAddresses ().filter (a => moves[a].target == address);
                 victims.forEach ((victim, i) => {
                     if (!results[victim].isDead)
                     {
@@ -745,9 +769,11 @@ function logDeath (address, target, isTargetDead)
 
 module.exports = {
     addUser,
+    nameUser,
     removeUser,
     disconnectUser,
     hasUser,
+    userHasJoined,
     userIsConnected,
     getUserAddresses,
     userCount,
@@ -764,8 +790,9 @@ module.exports = {
     getMessageLogOf,
     resendMessageLogOf,
 
-    addPlayer,
-    removePlayer,
+    addPlayerToGame,
+    kickPlayer,
+    numberOfPotentialPlayers,
     getPlayerAddresses,
     userIsPlaying,
     getNameOf,
