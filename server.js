@@ -381,7 +381,7 @@ app.use ("*/static", express.static (__dirname + "/static"));
 
 // Pages/redirects
 app.get ("/", (req, res) => {
-    let html = fs.readFileSync (`${__dirname}/game.html`, "utf8");
+    let html = fs.readFileSync (`${__dirname}/game.html`, "utf8").replace (/@static/g, `${__dirname}/static`);
     res.send (html);
 });
 
