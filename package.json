@@ -4,6 +4,7 @@
   "description": "A card-based variant of the Garry's Mod game mode Trouble in Terrorist Town",
   "main": "server.js",
   "dependencies": {
+    "@types/node": "^14.0.6",
     "express": "^4.17.1",
     "fs": "0.0.1-security",
     "socket.io": "^2.3.0"

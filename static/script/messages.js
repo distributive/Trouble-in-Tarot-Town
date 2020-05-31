@@ -2,7 +2,7 @@ let currentMessageGroup;
 
 function receiveMessage (sender, content, type)
 {
-    if (!currentMessageGroup)
+    if (!currentMessageGroup || type == "header")
         splitMessages ();
 
     // Add new message

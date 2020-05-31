@@ -2,11 +2,8 @@ let socket = io ();
 let token = "";
 
 /* MESSAGES */
-socket.on ("message", (content) => {
-    if (content.isDivider)
-        splitMessages ();
-
-    receiveMessage (content.sender, content.message, content.type);
+socket.on ("message", (message) => {
+    receiveMessage (message.sender, message.content, message.type);
 });
 /* MESSAGES END */
 

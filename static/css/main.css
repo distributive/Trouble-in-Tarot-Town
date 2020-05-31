@@ -14,8 +14,8 @@
     --color-highlight: #a8df65;
     --color-info: #45046a;
 
-    --color-message: #306057;
-    --color-message-alt: #303960;
+    --color-message: #508077;
+    --color-message-alt: #505980;
 
     --color-good: #0b88a4;
     --color-bad: #e30000;
@@ -812,6 +812,11 @@ body {
     background-color: #00000020;
 
     transition: height 0.1s;
+
+    opacity: 0.5;
+}
+.message-group:nth-last-child(-n+2) {
+    opacity: 1;
 }
 
 #messages .message, #messages .statement {
