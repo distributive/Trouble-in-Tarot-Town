@@ -380,44 +380,44 @@ function runTurn (): void
 
 
 // Routing
-let router = express.Router ();
+// let router = express.Router ();
 
 
 
 // Static path
-router.use ("/static", express.static ("static"));
+app.use ("/tarotTown/static", express.static ("static"));
 
 
 
 // Pages/redirects
-router.get ("/", (req, res) => {
+app.get ("/tarotTown/", (req, res) => {
     let html = fs.readFileSync (`${__dirname}/game.html`, "utf8");
     res.send (html);
 });
 
-router.get ("*", function (req, res) {
-    res.writeHead (302, {"Location": "/"});
+app.get ("*", function (req, res) {
+    res.writeHead (302, {"Location": "/tarotTown/"});
     res.end ();
 });
 
 
 
 // Error catching
-router.use (function (err, req, res, next) {
+app.use (function (err, req, res, next) {
 	// Log error
 	console.error ("Error detected:");
 	console.error (err.stack);
 	console.error ();
 
 	// Send response
-	res.writeHead (302, {"Location": "/"});
+	res.writeHead (302, {"Location": "/tarotTown/"});
 	res.end ();
 });
 
 
 
 // Apply router
-app.use (EXTENSION, router);
+// app.use (EXTENSION, router);
 
 
 
