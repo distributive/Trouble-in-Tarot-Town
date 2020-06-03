@@ -28,9 +28,21 @@ else
 
 
 
+// Set root directory
+let ROOT: string;
+if (args[1])
+    ROOT = args[1];
+else
+    ROOT = __dirname;
+
+if (ROOT.slice (-1) == '/')
+    ROOT = ROOT.substring (0, ROOT.length - 1);
+
+
+
 // Set number of bots
 let BOT_NAMES: Array<string> = ["Alice", "Bob", "Charlie", "Dan", "Erin", "Frank", "Grace", "Heidi"];
-let botCount: number = Math.min (BOT_NAMES.length, parseInt (args[1]));
+let botCount: number = Math.min (BOT_NAMES.length, parseInt (args[2]));
 
 if (botCount > 0)
 {
@@ -361,13 +373,13 @@ function runTurn (): void
 
 
 // Static path
-app.use ("*/static", express.static (__dirname + "/static"));
+app.use ("*/static", express.static (ROOT + "/static"));
 
 
 
 // Pages/redirects
 app.get ("/", (req, res) => {
-    let html = fs.readFileSync (`${__dirname}/game.html`, "utf8").replace (/@static/g, `${__dirname}/static`);
+    let html = fs.readFileSync (`${__dirname}/game.html`, "utf8").replace (/@static/g, `${ROOT}/static`);
     res.send (html);
 });
 
