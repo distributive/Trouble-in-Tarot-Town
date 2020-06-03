@@ -422,6 +422,6 @@ app.use (EXTENSION, router);
 
 
 // Run server
-app.listen (port, () => {
+http.listen (port, () => {
     console.log (`Listening on *:${port}`);
 });
