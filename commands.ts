@@ -97,7 +97,7 @@ new Command
             console.log ("  It supports three optional options:");
             console.log ("    `node <path>/server.js <port> <root> <bots>`");
             console.log ("    <port> defines the port to listen to (default: 8080).");
-            console.log ("    <root> defines the root directory as accessed by the client (default: \"\").");
+            console.log ("    <root> defines the root directory as accessed by the client (default: <current directory>).");
             console.log (`    <bots> defines the number of bots to load to (default: 0, max: 8, NOTE: for testing only).`);
 
             console.log ();
