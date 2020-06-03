@@ -4,14 +4,14 @@
 		<title>Trouble in Tarot Town</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="@static/css/main.css" />
+		<link rel="stylesheet" href="static/css/main.css" />
 
 		<!-- Favicons -->
-		<link rel="apple-touch-icon" sizes="180x180" href="@static/favicon/apple-touch-icon.png">
-		<link rel="icon" type="image/png" sizes="32x32" href="@static/favicon/favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="@static/favicon/favicon-16x16.png">
-		<link rel="manifest" href="@static/favicon/site.webmanifest">
-		<link rel="mask-icon" href="@static/favicon/safari-pinned-tab.svg" color="#5bbad5">
+		<link rel="apple-touch-icon" sizes="180x180" href="static/favicon/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="static/favicon/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="static/favicon/favicon-16x16.png">
+		<link rel="manifest" href="static/favicon/site.webmanifest">
+		<link rel="mask-icon" href="static/favicon/safari-pinned-tab.svg" color="#5bbad5">
 		<meta name="msapplication-TileColor" content="#da532c">
 		<meta name="theme-color" content="#ffffff">
 
@@ -26,19 +26,19 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
 		<!-- Local scripts -->
-		<script src="@static/script/main.js"></script>
-		<script src="@static/script/hand.js"></script>
-		<script src="@static/script/card.js"></script>
-		<script src="@static/script/text.js"></script>
-		<script src="@static/script/players.js"></script>
-		<script src="@static/script/announcements.js"></script>
-		<script src="@static/script/icon.js"></script>
-		<script src="@static/script/messages.js"></script>
-		<script src="@static/script/pages.js"></script>
+		<script src="static/script/main.js"></script>
+		<script src="static/script/hand.js"></script>
+		<script src="static/script/card.js"></script>
+		<script src="static/script/text.js"></script>
+		<script src="static/script/players.js"></script>
+		<script src="static/script/announcements.js"></script>
+		<script src="static/script/icon.js"></script>
+		<script src="static/script/messages.js"></script>
+		<script src="static/script/pages.js"></script>
 
 		<!-- Socket scripts -->
 		<script src="/socket.io/socket.io.js"></script>
-		<script src="@static/script/sockets.js"></script>
+		<script src="static/script/sockets.js"></script>
 	</head>
 
 	<body>
@@ -70,7 +70,7 @@
 				<div id="title">
 					<h1>TROUBLE IN TAROT TOWN</h1>
 				</div>
-				<img src="@static/img/logo.png" draggable="false" />
+				<img src="static/img/logo.png" draggable="false" />
 				<form>
 					<input type="text" placeholder="Enter nickname..." maxlength="20" name="nickname"><!--
 					--><input type="submit" value="Enter lobby">
@@ -91,13 +91,13 @@
 				</div>
 			</div>
 			<div id="turn-counter">
-				<img src="@static/img/turnCounter.png" alt="" draggable="false" />
+				<img src="static/img/turnCounter.png" alt="" draggable="false" />
 				<p>Turn 1</p>
 			</div>
 			<div id="killed">
 				<div class="box">
 					<h6>Dead</h6>
-					<img src="@static/img/iconDead.png" draggable="false" />
+					<img src="static/img/iconDead.png" draggable="false" />
 					<p>You have been killed. Do not continue to communicate with any other players, living or dead.</p>
 					<p>While you are dead, you can only draw and play DEAD cards. These inform other players of your demise.</p>
 					<p>Click anywhere to resume.</p>
@@ -119,14 +119,14 @@
 				<h6>The interface</h6>
 				<p>This is what you will see during the game (not pictured: the message log describing the actions you and other players have taken).</p>
 				<br>
-				<img class="centre large" src="@static/img/rulesUI.png" />
+				<img class="centre large" src="static/img/rulesUI.png" />
 				<br>
 				<ol>
 					<li>Your name and faction. If you are dead this will display a "dead" icon.</li>
-					<img class="right medium" src="@static/img/rulesCardSelection.png" />
+					<img class="right medium" src="static/img/rulesCardSelection.png" />
 					<li>Your hand. Click cards to see them more clearly.</li>
 					<li>The table. This displays all other players, and is where cards will go before you pick a target. To pick a target, click on a valid player's icon.</li>
-					<img class="left small" src="@static/img/rulesNoTarget.png" />
+					<img class="left small" src="static/img/rulesNoTarget.png" />
 					<li>Some cards do not need targets. Press this button if you want the card you have selected to not target any player.</li>
 					<li>The turn timer. If this hits 0, all players who have not played a card will have one randomly played for them. This may, or may not, be in your favour, but you will be informed of your action if it is randomised.</li>
 					<li>The buttons to view this page, and the full list of cards in play.</li>
@@ -136,13 +136,13 @@
 				<br>
 				<p>If you kill a player, or otherwise find out they are dead, the table will update to mirror your knowledge.</p>
 				<br>
-				<img class="centre small" src="@static/img/rulesKills.png" />
+				<img class="centre small" src="static/img/rulesKills.png" />
 				<p>If you yourself die, your faction icon will update, and you will start drawing the "Dead" card you will be required to play each turn.</p>
 				<br>
-				<img class="centre medium" src="@static/img/rulesDead.png" />
+				<img class="centre medium" src="static/img/rulesDead.png" />
 				<p>If you are a traitor, you will be informed of who your allies are at the start of the game, and your view of the table will update accordingly.</p>
 				<br>
-				<img class="centre large" src="@static/img/rulesTraitorView.png" />
+				<img class="centre large" src="static/img/rulesTraitorView.png" />
 				<br>
 				<br>
 				<br>

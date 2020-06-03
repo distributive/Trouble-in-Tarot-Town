@@ -29,14 +29,16 @@ else
 
 
 // Set root directory
-let ROOT: string;
+let EXTENSION: string;
 if (args[1])
-    ROOT = args[1];
+    EXTENSION = args[1];
 else
-    ROOT = __dirname;
+    EXTENSION = __dirname;
 
-if (ROOT.slice (-1) == '/')
-    ROOT = ROOT.substring (0, ROOT.length - 1);
+while (EXTENSION.slice (-1) == '/')
+    EXTENSION = EXTENSION.substring (0, EXTENSION.length - 1);
+if (EXTENSION[0] != '/' && EXTENSION.length > 0)
+    EXTENSION = '/' + EXTENSION;
 
 
 
@@ -52,6 +54,11 @@ if (botCount > 0)
         game.addUser (i+"", null).setName (botName);
     });
 }
+
+
+
+// Set up command line interface
+commands.setUpCommandLine ();
 
 
 
@@ -372,18 +379,23 @@ function runTurn (): void
 
 
 
+// Routing
+let router = express.Router ();
+
+
+
 // Static path
-app.use ("*/static", express.static (ROOT + "/static"));
+router.use ("/static", express.static ("static"));
 
 
 
 // Pages/redirects
-app.get ("/", (req, res) => {
-    let html = fs.readFileSync (`${__dirname}/game.html`, "utf8").replace (/@static/g, `${ROOT}/static`);
+router.get ("/", (req, res) => {
+    let html = fs.readFileSync (`${__dirname}/game.html`, "utf8");
     res.send (html);
 });
 
-app.get ("*", function (req, res) {
+router.get ("*", function (req, res) {
     res.writeHead (302, {"Location": "/"});
     res.end ();
 });
@@ -391,7 +403,7 @@ app.get ("*", function (req, res) {
 
 
 // Error catching
-app.use (function (err, req, res, next) {
+router.use (function (err, req, res, next) {
 	// Log error
 	console.error ("Error detected:");
 	console.error (err.stack);
@@ -404,12 +416,12 @@ app.use (function (err, req, res, next) {
 
 
 
-// Set up command line interface
-commands.setUpCommandLine ();
+// Apply router
+app.use (EXTENSION, router);
 
 
 
 // Run server
-http.listen (port, () => {
+app.listen (port, () => {
     console.log (`Listening on *:${port}`);
 });
