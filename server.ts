@@ -422,6 +422,6 @@ app.use (function (err, req, res, next) {
 
 
 // Run server
-http.listen (port, () => {
+app.listen (port, () => {
     console.log (`Listening on *:${port}`);
 });
