@@ -379,23 +379,18 @@ function runTurn (): void
 
 
 
-// Routing
-let router = express.Router ();
-
-
-
 // Static path
-router.use ("/tarotTown/static", express.static ("static"));
+app.use ("/tarotTown/static", express.static ("static"));
 
 
 
 // Pages/redirects
-router.get ("/tarotTown/", (req, res) => {
+app.get ("/tarotTown/", (req, res) => {
     let html = fs.readFileSync (`${__dirname}/game.html`, "utf8");
     res.send (html);
 });
 
-router.get ("*", function (req, res) {
+app.get ("*", function (req, res) {
     res.writeHead (302, {"Location": "/tarotTown/"});
     res.end ();
 });
@@ -403,7 +398,7 @@ router.get ("*", function (req, res) {
 
 
 // Error catching
-router.use (function (err, req, res, next) {
+app.use (function (err, req, res, next) {
 	// Log error
 	console.error ("Error detected:");
 	console.error (err.stack);
@@ -413,16 +408,6 @@ router.use (function (err, req, res, next) {
 	res.writeHead (302, {"Location": "/tarotTown/"});
 	res.end ();
 });
-
-
-
-// Route socket.io
-app.set ("socketio", io);
-
-
-
-// Apply router
-app.use (EXTENSION, router);
 
 
 
