@@ -30,10 +30,7 @@ else
 
 // Set root directory
 let EXTENSION: string;
-if (args[1])
-    EXTENSION = args[1];
-else
-    EXTENSION = __dirname;
+EXTENSION = (args[1]) ? args[1] : "";
 
 while (EXTENSION.slice (-1) == '/')
     EXTENSION = EXTENSION.substring (0, EXTENSION.length - 1);
@@ -380,18 +377,18 @@ function runTurn (): void
 
 
 // Static path
-app.use ("/tarotTown/static", express.static ("static"));
+app.use (`${EXTENSION}/static`, express.static ("static"));
 
 
 
 // Pages/redirects
-app.get ("/tarotTown/", (req, res) => {
+app.get (`${EXTENSION}/`, (req, res) => {
     let html = fs.readFileSync (`${__dirname}/game.html`, "utf8");
     res.send (html);
 });
 
 app.get ("*", function (req, res) {
-    res.writeHead (302, {"Location": "/tarotTown/"});
+    res.writeHead (302, {"Location": `${EXTENSION}/`});
     res.end ();
 });
 
@@ -405,7 +402,7 @@ app.use (function (err, req, res, next) {
 	console.error ();
 
 	// Send response
-	res.writeHead (302, {"Location": "/tarotTown/"});
+	res.writeHead (302, {"Location": `${EXTENSION}/`});
 	res.end ();
 });
 
