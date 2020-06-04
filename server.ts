@@ -387,7 +387,7 @@ app.get (`${EXTENSION}/`, (req, res) => {
     res.send (html);
 });
 
-app.get ("*", function (req, res) {
+app.get (`${EXTENSION}/*`, function (req, res) {
     res.writeHead (302, {"Location": `${EXTENSION}/`});
     res.end ();
 });
