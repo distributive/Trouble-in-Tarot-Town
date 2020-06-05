@@ -136,7 +136,7 @@ const cardInnocent  : RoleCard = new RoleCard (innocentTitle, innocentDescriptio
 const cardTraitor   : RoleCard = new RoleCard (traitorTitle, traitorDescription, Faction.TRAITOR, Team.TRAITOR);
 const cardDetective : RoleCard = new RoleCard (detectiveTitle, detectiveDescription, Faction.DETECTIVE, Team.INNOCENT);
 
-const cardDead     : Card = new Card (deadTitle, deadDescription, deadTargetted);
+const cardDead     : Card = new DeadCard (deadTitle, deadDescription, deadTargetted);
 const cardWitness  : Card = new Card (witnessTitle, witnessDescription, witnessTargetted);
 const cardKill     : Card = new Card (killTitle, killDescription, killTargetted);
 const cardInspect  : Card = new Card (inspectTitle, inspectDescription, inspectTargetted);
