@@ -688,14 +688,14 @@ export function getResultsOfTurn (): TurnData
                     // Log deaths
                     if (killers.length > 0)
                         logDeath (source, target, true);
-                    victims.forEach ((victim, i) => {
+                    victims.forEach (victim => {
                         logDeath (source, victim, true);
                     });
 
                     if (killers.length > 0)
                         result.messages.push (createMessage (null, `${target.name} was killed by ${util.formatList (killers.map (u => u.name))}.`, "info"));
                     if (victims.length > 0)
-                        result.messages.push (createMessage (null, `${target.name} killed ${util.formatList (victims.map (u => u.name))}.`, "info"));
+                        result.messages.push (createMessage (null, `${target.name} killed ${util.formatList (victims.map (u => (u == source) ? "you" : u.name))}.`, "info"));
                 }
             break;
 

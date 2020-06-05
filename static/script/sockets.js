@@ -1,4 +1,8 @@
-let socket = io ();
+let path = window.location.pathname;
+if (path[path.length - 1] == "/")
+    path = path.slice (0, -1);
+
+let socket = io ({ "path": `${path}/socket.io` });
 let token = "";
 
 /* MESSAGES */

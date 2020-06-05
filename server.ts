@@ -1,7 +1,7 @@
 const express = require ("express");
 const app = express ();
 const http = require ("http").createServer (app);
-const io = require ("socket.io") (http);
+const io = require ("socket.io");
 const fs = require ("fs");
 
 import * as game from "./game";
@@ -28,20 +28,9 @@ else
 
 
 
-// Set root directory
-let EXTENSION: string;
-EXTENSION = (args[1]) ? args[1] : "";
-
-while (EXTENSION.slice (-1) == '/')
-    EXTENSION = EXTENSION.substring (0, EXTENSION.length - 1);
-if (EXTENSION[0] != '/' && EXTENSION.length > 0)
-    EXTENSION = '/' + EXTENSION;
-
-
-
 // Set number of bots
 let BOT_NAMES: Array<string> = ["Alice", "Bob", "Charlie", "Dan", "Erin", "Frank", "Grace", "Heidi"];
-let botCount: number = Math.min (BOT_NAMES.length, parseInt (args[2]));
+let botCount: number = Math.min (BOT_NAMES.length, parseInt (args[1]));
 
 if (botCount > 0)
 {
@@ -377,18 +366,18 @@ function runTurn (): void
 
 
 // Static path
-app.use (`${EXTENSION}/static`, express.static ("static"));
+app.use (`/static`, express.static ("static"));
 
 
 
 // Pages/redirects
-app.get (`${EXTENSION}/`, (req, res) => {
+app.get (`/`, (req, res) => {
     let html = fs.readFileSync (`${__dirname}/game.html`, "utf8");
     res.send (html);
 });
 
-app.get (`${EXTENSION}/*`, function (req, res) {
-    res.writeHead (302, {"Location": `${EXTENSION}/`});
+app.get (`/*`, function (req, res) {
+    res.writeHead (302, {"Location": `/`});
     res.end ();
 });
 
@@ -402,7 +391,7 @@ app.use (function (err, req, res, next) {
 	console.error ();
 
 	// Send response
-	res.writeHead (302, {"Location": `${EXTENSION}/`});
+	res.writeHead (302, {"Location": `/`});
 	res.end ();
 });
 
