@@ -32,9 +32,9 @@ function showTurnCount (turnNumber)
 
 function showEndGame (didWin)
 {
-    // $("#turn-counter p").html ((didWin) ? "You won!" : "You lost");
-    // $("#turn-counter").show (250, "swing");
-    // setTimeout (() => {$("#turn-counter").hide (250, "swing")}, 2000);
+    $("#turn-counter p").html ((didWin) ? "You won!" : "You lost");
+    $("#turn-counter").show (250, "swing");
+    setTimeout (() => {$("#turn-counter").hide (250, "swing")}, 2000);
 }
 
 
