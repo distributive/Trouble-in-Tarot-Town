@@ -3,7 +3,6 @@ if (path[path.length - 1] == "/")
     path = path.slice (0, -1);
 
 let socket = io ({ "path": `${path}/socket.io` });
-let token = "";
 
 /* MESSAGES */
 socket.on ("message", (message) => {
@@ -14,6 +13,13 @@ socket.on ("message", (message) => {
 
 
 /* JOINING */
+socket.on ("requestToken", (defaultToken) => {
+    if (localStorage.token == null)
+        localStorage.token = defaultToken;
+
+    socket.emit ("connectWithToken", localStorage.token);
+});
+
 socket.on ("connected", () => {
     clearMessages ();
 });
@@ -62,7 +68,7 @@ socket.on ("setPlayers", (data) => {
     let otherPlayers = data.otherPlayers.filter (player => !data.gameIsRunning || player.isActive);
 
     // Create player objects
-    otherPlayers.forEach(player => {
+    otherPlayers.forEach (player => {
         createPlayer (player.name, player.isActive);
     });
 

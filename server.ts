@@ -4,6 +4,8 @@ const http = require ("http").createServer (app);
 const io = require ("socket.io") (http);
 const fs = require ("fs");
 
+import { v4 as uuidv4 } from 'uuid';
+
 import * as game from "./game";
 import {Address, User, Message, createMessage, Move, Result, TurnData, WinCondition} from "./game";
 import * as cards from "./cards";
@@ -49,13 +51,13 @@ commands.setUpCommandLine ();
 
 
 // Web sockets
-io.on ("connection", (socket) => {
-    let address: Address = socket.handshake.address + "";
-    console.log (`${address} connected.`);
+io.on ("connection", socket => {
+    socket.on ("connectWithToken", token => onConnect (socket, token));
+    socket.emit ("requestToken", uuidv4 ());
+});
 
-    // Send card list (for card dex page)
-    socket.emit ("setCardDex", cards.getCardDex ());
-
+function onConnect (socket, address)
+{
     // Detect duplicate clients
     // if (game.hasUser (address) && game.getUser (address).online)
     // {
@@ -66,6 +68,9 @@ io.on ("connection", (socket) => {
     {
         socket.emit ("connected");
     }
+
+    // Send card list (for card dex page)
+    socket.emit ("setCardDex", cards.getCardDex ());
 
     // Add user/update old user with new socket
     let user: User = game.addUser (address, socket);
@@ -105,7 +110,6 @@ io.on ("connection", (socket) => {
     }
 
     socket.on ("disconnect", () => {
-        console.log (`${address} disconnected.`);
         user.disconnect ();
 
         // Inform other users you have disconnected
@@ -167,7 +171,7 @@ io.on ("connection", (socket) => {
             user.removeCardFromHand (card);
         }
     });
-});
+}
 
 function startGame (): void
 {
