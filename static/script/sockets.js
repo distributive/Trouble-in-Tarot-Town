@@ -60,19 +60,19 @@ socket.on ("setName", (name) => {
     $("#player-name").html (name);
 });
 
-socket.on ("setPlayers", (data) => {
+socket.on ("setPlayers", (otherPlayerData, isPlaying, gameIsRunning) => {
     // For now, just wipe all player objects and recreate new ones
     resetPlayers ();
 
     // Remove spectators if not spectating
-    let otherPlayers = data.otherPlayers.filter (player => !data.gameIsRunning || player.isActive);
+    let otherPlayers = otherPlayerData.filter (player => !gameIsRunning || player.isActive);
 
     // Create player objects
     otherPlayers.forEach (player => {
         createPlayer (player.name, player.isActive);
     });
 
-    let playerCount = otherPlayers.length + ((data.isPlaying) ? 1 : 0);
+    let playerCount = otherPlayers.length + (isPlaying ? 1 : 0);
     $("#player-count").html (playerCount + " player" + ((playerCount > 1) ? "s" : "") + " in game.");
 });
 

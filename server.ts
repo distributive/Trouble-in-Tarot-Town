@@ -82,7 +82,7 @@ function onConnect (socket, address)
     if (user.name != "")
     {
         socket.emit ("alreadyJoined");
-        socket.emit ("setPlayers", {otherPlayers: game.getOtherPublicPlayerData (user), isPlaying: true, gameIsRunning: game.gameIsActive ()});
+        socket.emit ("setPlayers", game.getOtherPublicPlayerData (user), true, game.gameIsActive ());
         socket.emit ("setFaction", (user.isDead) ? "dead" : game.factionToString (user.faction));
         socket.emit ("setName", user.name);
         socket.emit ("setCards", user.getCards ());
@@ -96,11 +96,20 @@ function onConnect (socket, address)
 
         // Inform other users you have reconencted
         game.messageAllOtherUsers (user, createMessage (null, `${user.name} has reconnected.`, "server"));
+
+        // If enough players are online, start a game
+        if (!game.gameIsActive () && game.getNonSpectatingUsers ().length >= config.settings.MINIMUM_PLAYER_COUNT)
+        {
+            game.startPregame ();
+            game.messageAllUsers (createMessage (null, "New game", "header"));
+            game.messageAllUsers (createMessage (null, `A game will begin in ${config.settings.PRE_GAME_TIME} seconds.`));
+            setTimeout (() => {startGame ();}, config.settings.PRE_GAME_TIME * 1000);
+        }
     }
     else
     {
         socket.emit ("requestJoin");
-        socket.emit ("setPlayers", {otherPlayers: game.getOtherPublicPlayerData (user), isPlaying: false, gameIsRunning: game.gameIsActive ()});
+        socket.emit ("setPlayers", game.getOtherPublicPlayerData (user), false, game.gameIsActive ());
 
         // Reset these in case the server was reset but the client didn't refresh
         socket.emit ("setCards", []);
@@ -138,11 +147,11 @@ function onConnect (socket, address)
 
             // Update player list for all players
             game.getPlayers ().forEach (u => {
-                user.emit ("setPlayers", {otherPlayers: game.getOtherPublicPlayerData (u), isPlaying: true, gameIsRunning: game.gameIsActive ()});
+                user.emit ("setPlayers", game.getOtherPublicPlayerData (u), true, game.gameIsActive ());
             });
 
             // Inform other players you have joined
-            game.messageAllOtherPlayers (user, createMessage (`${user.name} has joined.`, "server"));
+            game.messageAllOtherPlayers (user, createMessage (null, `${user.name} has joined.`, "server"));
 
             // If enough players are online, start a game
             if (!game.gameIsActive () && game.getNonSpectatingUsers ().length >= config.settings.MINIMUM_PLAYER_COUNT)
@@ -197,7 +206,7 @@ function startGame (): void
         if (!user.isBot)
         {
             // Ensure the correct player list displays for all players
-            user.emit ("setPlayers", {otherPlayers: game.getOtherPublicPlayerData (user), isPlaying: true, gameIsRunning: game.gameIsActive ()});
+            user.emit ("setPlayers", game.getOtherPublicPlayerData (user), true, game.gameIsActive ());
 
             // Set up start of game UI
             user.emit ("setCards", user.getCards ());

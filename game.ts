@@ -81,7 +81,8 @@ export class User
     {
         return {
             "name": this._name,
-            "isActive": this._team != Team.SPECTATOR && this._team != Team.NONE
+            "isActive": this._team != Team.SPECTATOR && this._team != Team.NONE,
+            "online": this._online
         }
     }
 
@@ -122,12 +123,12 @@ export class User
         this._inGame = false;
     }
 
-    emit (flag: string, content: any): void
+    emit (flag: string, ...content: any[]): void
     {
         if (this._socket == null)
             return;
 
-        this._socket.emit (flag, content);
+        this._socket.emit (flag, ...content);
     }
 
     message (message: Message, storeInLog: boolean = true): void
@@ -601,9 +602,6 @@ export function randomiseRemainingMoves (): void
         {
             card = util.shuffle (user.getCards ().filter (c => !(c instanceof RoleCard)))[0] as Card;
         }
-
-        console.log (user.name);
-        console.log (card != null && card != undefined);
 
         target = (card.targetType != TargetType.PLAYER) ? null : util.shuffle (getPlayers ().filter (t => t != user))[0];
 
