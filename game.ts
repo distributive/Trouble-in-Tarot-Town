@@ -278,10 +278,10 @@ export function getPublicPlayerData (): Array<object> // returns name and whethe
 }
 export function getOtherPublicPlayerData (user: User): Array<object>
 {
-    let results = getPlayers ().filter (u => u.address != user.address).map (u => u.publicData);
+    let results = getPlayers ().filter (u => u != null && u.address != user.address).map (u => u.publicData);
 
     if (results.length == 0)
-        results = getAllUsers ().filter (u => u.address != user.address).map (user => user.publicData);
+        results = getAllUsers ().filter (u => u != null && u.address != user.address).map (user => user.publicData);
 
     return results;
 }
