@@ -81,7 +81,7 @@ export class User
     {
         return {
             "name": this._name,
-            "isActive": this._team != Team.SPECTATOR
+            "isActive": this._team != Team.SPECTATOR && this._team != Team.NONE
         }
     }
 
@@ -268,11 +268,21 @@ export function getOtherPlayerNames (user: User): Array<string>
 
 export function getPublicPlayerData (): Array<object> // returns name and whether they're a spectator for each player
 {
-    return getPlayers ().map (user => user.publicData);
+    let results = getPlayers ().map (user => user.publicData);
+
+    if (results.length == 0)
+        results = getAllUsers ().map (user => user.publicData);
+
+    return results;
 }
 export function getOtherPublicPlayerData (user: User): Array<object>
 {
-    return getPlayers ().filter (u => u != user).map (u => u.publicData);
+    let results = getPlayers ().filter (u => u.address != user.address).map (u => u.publicData);
+
+    if (results.length == 0)
+        results = getAllUsers ().filter (u => u.address != user.address).map (user => user.publicData);
+
+    return results;
 }
 
 export function thereExistsPlayerWithName (name: string): boolean

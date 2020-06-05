@@ -1,7 +1,7 @@
 const express = require ("express");
 const app = express ();
 const http = require ("http").createServer (app);
-const io = require ("socket.io");
+const io = require ("socket.io") (http);
 const fs = require ("fs");
 
 import * as game from "./game";
@@ -95,7 +95,7 @@ io.on ("connection", (socket) => {
     else
     {
         socket.emit ("requestJoin");
-        socket.emit ("setPlayers", {otherPlayers: game.getPublicPlayerData (), isPlaying: false, gameIsRunning: game.gameIsActive ()});
+        socket.emit ("setPlayers", {otherPlayers: game.getOtherPublicPlayerData (user), isPlaying: false, gameIsRunning: game.gameIsActive ()});
 
         // Reset these in case the server was reset but the client didn't refresh
         socket.emit ("setCards", []);

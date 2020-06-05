@@ -62,7 +62,7 @@ socket.on ("setPlayers", (data) => {
     let otherPlayers = data.otherPlayers.filter (player => !data.gameIsRunning || player.isActive);
 
     // Create player objects
-    otherPlayers.forEach((player, i) => {
+    otherPlayers.forEach(player => {
         createPlayer (player.name, player.isActive);
     });
 
