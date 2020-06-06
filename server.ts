@@ -277,9 +277,12 @@ function runTurn (): void
                 });
 
                 // Update the known dead of each player
-                game.getPlayers ().forEach (otherUser => {
+                game.getPlayers ().filter (u => u != user).forEach (otherUser => {
                     user.emit ("revealIsDead", {"name": otherUser.name, "isDead": user.getKnownDead ().includes (otherUser)});
                 });
+
+                // Resend hand data
+                user.emit ("setCards", user.getCards ());
             });
 
             // Inform the newly killed they are dead
