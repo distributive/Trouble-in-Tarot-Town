@@ -587,7 +587,7 @@ export function attemptMove (source: User, target: User, card: Card): string
 
 export function allPlayersHaveMoved (): boolean
 {
-    return getPlayers ().every (user => moves.hasOwnProperty (user.address));
+    return getPlayers ().every (user => user.isBot || moves.hasOwnProperty (user.address));
 }
 
 export function randomiseRemainingMoves (): void
