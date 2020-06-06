@@ -295,6 +295,7 @@ function runTurn (): void
             if (winners)
             {
                 io.emit ("setCards", []);
+
                 game.endGame ();
 
                 game.messageAllUsers (createMessage (null, "Game over!", "header"));

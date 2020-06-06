@@ -36,6 +36,7 @@ function backgroundClick (event)
 
 function onResize ()
 {
-    hand.positionCards ();
+    $(".player").removeClass ("moving");
+    hand.positionCards (false);
     positionPlayers ();
 }

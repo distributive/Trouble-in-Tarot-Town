@@ -525,7 +525,7 @@ export function endGame (): void
     gameState = GameState.POST_GAME;
 
     getPlayers ().forEach (user => {
-        user.clearHand;
+        user.clearHand ();
     });
 }
 

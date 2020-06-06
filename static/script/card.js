@@ -23,6 +23,14 @@ function createCardObject (cardInfo)
     return new CardObject (jQueryRef, cardInfo);
 }
 
+function playerToCardSpace (playerPos)
+{
+    let x = playerPos[0] + $(document).width () / 2;
+    let y = playerPos[1] + $(document).height () * (0.99) - $("#players").height () / 2;
+
+    return [x, y];
+}
+
 
 
 function CardObject (jQueryRef, cardInfo)
@@ -31,8 +39,14 @@ function CardObject (jQueryRef, cardInfo)
     this.cardInfo = cardInfo;
 
     /* TRANSFORMATIONS */
-    this.setPos = (x, y) =>
+    this.setPos = (x, y, animated = true) =>
     {
+        if (animated)
+        {
+            this.jQueryRef.addClass ("moving");
+            setTimeout (() => {this.jQueryRef.removeClass ("moving");}, 100);
+        }
+
         this.jQueryRef.css ("left", x);
         this.jQueryRef.css ("bottom", y);
     };
@@ -78,35 +92,35 @@ function CardObject (jQueryRef, cardInfo)
         hand.positionCards ();
     };
 
-    this.placeInSelectionArea = () =>
+    this.placeInSelectionArea = (animated = true) =>
     {
-        this.setPos ($(document).width () / 2, $(document).height () / 2);
+        this.setPos ($(document).width () / 2, $(document).height () / 2, animated);
         this.setRot (0);
         this.setWidth (CARD_WIDTH_SELECTED);
     }
-    this.placeInHand = (handIndex) =>
+    this.placeInHand = (handIndex, animated = true) =>
     {
         let separation = Math.min (CARD_MAX_SEPARATION, HAND_MAX_WIDTH / (hand.cards.length - 1));
 
         let x = handIndex - (hand.cards.length)/2 + 1/2;
         let y = 1 - ((x == 0) ? separation / 10 : Math.abs (x*separation) / 7); // Bleurgh
 
-        this.setPos ((50 + x * separation) + "vw", y + "vw");
+        this.setPos ((50 + x * separation) + "vw", y + "vw", animated);
         this.setRot (2 * CARD_MAX_ANGLE * x / HAND_MAX_WIDTH);
         this.setWidth (CARD_WIDTH_IN_HAND);
     };
-    this.sendToPlayer = (playerObject) =>
+    this.sendToPlayer = (playerObject, animated = true) =>
     {
-        let [x, y] = playerObject.getPosition ();
-        this.setPos (x, y);
+        let [x, y] = playerToCardSpace (playerObject.getPosition ());
+        this.setPos (x, y, animated);
         this.setRot (0);
         this.setWidth (0);
 
         setTimeout (() => {this.jQueryRef.remove ();}, 5000);
     };
-    this.sendToNoOne = () =>
+    this.sendToNoOne = (animated = true) =>
     {
-        this.setPos ($(document).width () / 2, $(document).height () / 2);
+        this.setPos ($(document).width () / 2, $(document).height () / 2, animated);
         this.setRot (0);
         this.setWidth (0);
 

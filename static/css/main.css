@@ -11,7 +11,7 @@
     --color-grey: #afafaf;
 
     --color-important: #ff0700;
-    --color-highlight: #a8df65;
+    --color-highlight: #8d753d;
     --color-info: #45046a;
 
     --color-message: #508077;
@@ -288,17 +288,21 @@ body {
 }
 
 #hand .card {
-    transition: left 0.1s, bottom 0.1s, width 0.1s, padding-top 0.1s, border-radius 0.1s, transform 0.1s;
+    border-radius: 1.56em;
+    box-shadow: 0 0 1vw var(--color-sec);
 }
 #hand .card:hover {
-    border-radius: 1.56em;
-    box-shadow: 0 0 20px var(--card-hover-glow);
+    box-shadow: 0 0 1vw var(--card-hover-glow);
 }
-#hand .card .title-box {
-    transition: font-size 0.1s;
+
+.card.moving {
+    transition: left 0.1s, bottom 0.1s, transform 0.1s, width 0.15s, padding-top 0.15s, border-radius 0.15s;
 }
-#hand .card .text-box {
-    transition: font-size 0.1s;
+.card.moving .title-box {
+    transition: font-size 0.15s;
+}
+.card.moving .text-box {
+    transition: font-size 0.15s;
 }
 /* CARDS END */
 
@@ -307,32 +311,65 @@ body {
 /* PLAYER ICONS */
 #players {
     display: none;
-    margin: 0;
     position: absolute;
-    top: calc(50% - 400px);
-    left: calc(50% - 400px);
 
-    width: 800px;
-    height: 800px;
+    top: 1%;
+    left: 50%;
+    transform: translate(-50%, 0);
 
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-image: url("../img/circle.png");
+    padding-top: 50px;
+
+    width: 750px;
+    height: 750px;
+
+    background-color: #00000022;
+    border-radius: 50px 50px 500px 500px;
 }
 
-#players .player {
-    position: fixed;
+#players h3 {
+    position: absolute;
 
-    width: 10em;
-    height: 10em;
+    top: 2%;
+    left: 3%;
+
+    color: var(--title-color);
+    font-size: 1.75em;
+    text-decoration: underline;
+    font-family: var(--font-header);
+}
+
+#players img {
+    position: absolute;
+
+    left: 50%;
+    bottom: 50%;
+    transform: translate(-50%, 50%);
+
+    width: 80%;
+}
+
+#player-container {
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+
+    width: 0;
+    height: 0;
+}
+
+#player-container .player {
+    position: absolute;
+
+    width: 8em;
+    height: 8em;
 
     transform: translate(-50%, 50%);
 }
-#players .player:hover .background {
-    box-shadow: 0 0 20px var(--card-hover-glow);
+#player-container .player:hover .background {
+    box-shadow: 0 0 40px var(--card-hover-glow);
 }
 
-#players .player .background {
+#player-container .player .background {
     top: 0;
     margin-left: auto;
     margin-right: auto;
@@ -343,24 +380,17 @@ body {
     border-radius: 90px;
     background-color: white;
 }
-#players .player .background .icon {
+#player-container .player .background .icon {
+    position: relative;
+
+    padding: 5%;
     width: 90%;
     height: 90%;
 
-    margin: 0;
-    position: relative;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-
     border-radius: 90px;
-    background-color: grey;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-image: url("../img/iconUnknown.png");
 }
 
-#players .player .tag {
+#player-container .player .tag {
     position: relative;
     bottom: 20%;
     margin: auto;
@@ -388,19 +418,19 @@ body {
     background-color: white;
 }
 
-#players .player.inactive {
+#player-container .player.inactive {
     opacity: 0.5;
 }
 
-#players .player.traitor .background {
+#player-container .player.traitor .background {
     background-color: var(--color-bad);
 }
 
-#players .player.detective .background {
+#player-container .player.detective .background {
     background-color: var(--color-detective);
 }
 
-#players .player.dead .tag {
+#player-container .player.dead .tag {
     color: var(--dead-fg);
     background-color: var(--dead-bg);
 }
@@ -529,11 +559,11 @@ body {
 
 
 
-#announcements #turn-counter {
+#turn-counter {
     display: none;
     position: fixed;
 
-    top: 10em;
+    top: 25%;
     left: 50%;
     transform: translateX(-50%);
 
@@ -542,7 +572,7 @@ body {
 
     z-index: 50000;
 }
-#announcements #turn-counter p {
+#turn-counter p {
     position: absolute;
 
     top: 50%;
@@ -550,16 +580,16 @@ body {
 
     width: 100%;
 
-    font-family: var(--font-announcement);
-    font-size: 100px;
+    font-family: var(--font-card-title);
+    font-size: 8em;
     font-weight: bold;
     color: white;
     text-align: center;
 
-    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-width: 0.05em;
     -webkit-text-stroke-color: black;
 }
-#announcements #turn-counter img {
+#turn-counter img {
     position: absolute;
     top: 0;
 
@@ -813,7 +843,7 @@ body {
 
     transition: height 0.1s;
 
-    opacity: 0.5;
+    opacity: 0.3;
 }
 .message-group:nth-last-child(-n+2) {
     opacity: 1;

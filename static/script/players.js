@@ -1,10 +1,10 @@
 let players = [];
 let ARC_ANGLE = 330;
-let ARC_RADIUS = 400;
+let ARC_RADIUS = 290;
 
 function createPlayer (name, isActive)
 {
-    let jQueryRef = $(playerTempl.replace ("@name", name)).appendTo ($("#players"));
+    let jQueryRef = $(playerTempl.replace ("@name", name)).appendTo ($("#player-container"));
     let playerObject = new PlayerObject (jQueryRef, name);
     playerObject.setActive (isActive);
     players.push (playerObject);
@@ -32,6 +32,9 @@ function resetPlayers ()
 }
 function getPlayerWithName (name)
 {
+    if (name == null)
+        return;
+
     name = name.toLowerCase ();
     const index = players.findIndex (p => p.name == name);
 
@@ -55,8 +58,8 @@ function PlayerObject (jQueryRef, name)
         angle += 90 - ARC_ANGLE / 2;
         angle *= 0.0174533;
 
-        let x = -ARC_RADIUS * Math.cos (angle) + $(document).width () / 2;
-        let y = ARC_RADIUS * Math.sin (angle) + $(document).height () / 2;
+        let x = -ARC_RADIUS * Math.cos (angle);
+        let y = ARC_RADIUS * Math.sin (angle);
 
         return [x, y];
     };

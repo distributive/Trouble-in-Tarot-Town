@@ -31,17 +31,17 @@ function Hand (cards)
     }
 
     /* UI */
-    this.positionCards = () =>
+    this.positionCards = (animated = true) =>
     {
         for (let i = 0; i < this.cards.length; i++)
         {
             if (this.cards[i] == this.selectedCard)
             {
-                this.cards[i].placeInSelectionArea ();
+                this.cards[i].placeInSelectionArea (animated);
             }
             else
             {
-                this.cards[i].placeInHand (i);
+                this.cards[i].placeInHand (i, animated);
             }
         }
 
