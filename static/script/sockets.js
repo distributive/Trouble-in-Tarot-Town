@@ -128,17 +128,23 @@ socket.on ("setTurnCountdown", (value) => {
 /* GAMEPLAY */
 socket.on ("startGame", () => {
     resetFactions ();
+    playSFX ("cardShuffle");
 });
 
 socket.on ("drawCard", (card) => {
     drawCard (card);
+    playSFX ("cardDraw");
 });
 
 socket.on ("setCards", (cards) => {
     hand.clear ();
-    cards.forEach ((card, i) => {
+    cards.forEach (card => {
         drawCard (card);
     });
+    if (hand.length > 0)
+    {
+        playSFX ("cardDraw");
+    }
 });
 
 socket.on ("forcePlay", (move) => {

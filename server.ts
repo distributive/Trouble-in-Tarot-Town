@@ -112,7 +112,6 @@ function onConnect (socket, address)
         socket.emit ("setPlayers", game.getOtherPublicPlayerData (user), false, game.gameIsActive ());
 
         // Reset these in case the server was reset but the client didn't refresh
-        socket.emit ("setCards", []);
         socket.emit ("setFaction", "spectator");
         socket.emit ("setCards", user.getCards ());
         socket.emit ("setTurnCountdown", -1);

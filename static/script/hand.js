@@ -83,10 +83,12 @@ function setNoTargetButton (isActive)
                     hand.remove (selectedCard);
                     hand.selectedCard = null;
                     hand.positionCards ();
+                    playSFX ("cardPlay");
                 });
                 socket.on ("failure", () => {
                     hand.selectedCard = null;
                     hand.positionCards ();
+                    playSFX ("cardReturn");
                 });
                 socket.emit ("attemptPlay", selectedCard.cardInfo, null);
             }

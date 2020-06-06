@@ -81,9 +81,15 @@ function CardObject (jQueryRef, cardInfo)
     this.select = () =>
     {
         if (hand.selectedCard == this)
+        {
             hand.selectedCard = null;
+            playSFX ("cardReturn");
+        }
         else
+        {
             hand.selectedCard = this;
+            playSFX ("cardSelect");
+        }
         hand.positionCards ();
     };
     this.forceToBeSelected = () =>

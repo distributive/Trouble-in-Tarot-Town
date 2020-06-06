@@ -35,6 +35,11 @@ function showEndGame (didWin)
     $("#turn-counter p").html ((didWin) ? "You won!" : "You lost");
     $("#turn-counter").show (250, "swing");
     setTimeout (() => {$("#turn-counter").hide (250, "swing")}, 2000);
+
+    if (didWin)
+        playSFX ("gameWin");
+    else
+        playSFX ("gameLose");
 }
 
 

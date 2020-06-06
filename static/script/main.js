@@ -28,6 +28,9 @@ function hideDimmer ()
 
 function backgroundClick (event)
 {
+    if (hand.selectedCard != null)
+        playSFX ("cardReturn");
+
     hand.selectedCard = null;
     hand.positionCards ();
 
