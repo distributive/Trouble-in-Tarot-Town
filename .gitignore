@@ -118,5 +118,5 @@ dist
 
 # Tarot Town specific
 *.js
-!static/*.js
+!static/script/*.js
 settings.json
