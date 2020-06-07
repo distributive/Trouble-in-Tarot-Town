@@ -529,6 +529,15 @@ export function endGame (): void
     });
 }
 
+export function stopGame (): void
+{
+    gameState = GameState.NO_GAME;
+
+    getNonSpectatingUsers ().forEach (user => {
+        user.reset ();
+    });
+}
+
 export function startTurn (): void
 {
     turn++;

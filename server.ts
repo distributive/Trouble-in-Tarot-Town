@@ -191,6 +191,7 @@ function startGame (): void
     if (game.getNonSpectatingUsers ().length < config.settings.MINIMUM_PLAYER_COUNT)
     {
         game.messageAllUsers (createMessage (null, "There are not enough non-spectating players online for a game. Waiting for more players."));
+        game.stopGame ();
         return;
     }
 
