@@ -1,3 +1,4 @@
+import {startPregame, stopGame} from "./server";
 import * as game from "./game";
 import {createMessage} from "./game";
 import * as util from "./util";
@@ -17,6 +18,61 @@ function Command (name, helpText, effect)
 }
 
 
+
+// help
+new Command
+(
+    "help",
+    "Shows one or more commands' help text.\n" +
+    "If none is specified, show this message.\n" +
+    "Usage:\n" +
+    "  help [<command>]\n" +
+    "  help",
+    (args) => {
+        if (args.length > 0)
+        {
+            args.filter ((arg, pos) => args.indexOf (arg) == pos).forEach ((arg, i) => {
+                if (Object.keys (commands).includes (arg))
+                {
+                    console.log (commands[arg].name);
+                    console.log (util.indentString (commands[arg].helpText, "  "));
+                }
+                else
+                {
+                    console.log (`  No such command: ${arg}`);
+                }
+            });
+        }
+        else
+        {
+            console.log ();
+            console.log ("================================================================");
+            console.log ();
+
+            console.log ("RUNNING THE SERVER");
+            console.log ("  This server must be run using node: `node <path>/server.js`");
+            console.log ("  It supports two optional options:");
+            console.log ("    `node <path>/server.js <port> <bots>`");
+            console.log ("    <port> defines the port to listen to (default: 8080).");
+            console.log (`    <bots> defines the number of bots to load to (default: 0, max: 8, NOTE: for testing only).`);
+
+            console.log ();
+            console.log ("================================================================");
+            console.log ();
+
+            console.log ("AVAILABLE COMMANDS");
+
+            Object.keys (commands).map (name => commands[name]).forEach ((command, i) => {
+                console.log (command.name);
+                console.log (util.indentString (command.helpText, "  "));
+            });
+
+            console.log ();
+            console.log ("================================================================");
+            console.log ();
+        }
+    }
+);
 
 // exit
 new Command
@@ -62,57 +118,33 @@ new Command
     }
 );
 
-// help
+// set
 new Command
 (
-    "help",
-    "Shows one or more commands' help text.\n" +
-    "If none is specified, show this message.\n" +
+    "set",
+    "Sets a global setting\n" +
+    "Settings:\n" +
+    Object.keys (config.settings).map ((f) => "  " + f).join (`\n`) + `\n` +
     "Usage:\n" +
-    "  help [<command>]\n" +
-    "  help",
+    "  set <setting> <value>",
     (args) => {
-        if (args.length > 0)
+        if (args.length < 2)
         {
-            args.filter ((arg, pos) => args.indexOf (arg) == pos).forEach ((arg, i) => {
-                if (Object.keys (commands).includes (arg))
-                {
-                    console.log (commands[arg].name);
-                    console.log (util.indentString (commands[arg].helpText, "  "));
-                }
-                else
-                {
-                    console.log (`  No such command: ${arg}`);
-                }
-            });
+            console.error ("Format: set <setting> <value>");
+        }
+        else if (!config.settings.hasOwnProperty (args[0]))
+        {
+            console.error (`No such setting: ${args[0]}`);
+        }
+        else if (isNaN (args[1]))
+        {
+            console.error (`${args[1]} is not a number.`);
         }
         else
         {
-            console.log ();
-            console.log ("================================================================");
-            console.log ();
-
-            console.log ("RUNNING THE SERVER");
-            console.log ("  This server must be run using node: `node <path>/server.js`");
-            console.log ("  It supports three optional options:");
-            console.log ("    `node <path>/server.js <port> <bots>`");
-            console.log ("    <port> defines the port to listen to (default: 8080).");
-            console.log (`    <bots> defines the number of bots to load to (default: 0, max: 8, NOTE: for testing only).`);
-
-            console.log ();
-            console.log ("================================================================");
-            console.log ();
-
-            console.log ("AVAILABLE COMMANDS");
-
-            Object.keys (commands).map (name => commands[name]).forEach ((command, i) => {
-                console.log (command.name);
-                console.log (util.indentString (command.helpText, "  "));
-            });
-
-            console.log ();
-            console.log ("================================================================");
-            console.log ();
+            config.settings[args[0]] = parseInt (args[1]);
+            config.saveSettings ();
+            console.log (`Set value of ${args[0]} to ${args[1]}.`);
         }
     }
 );
@@ -152,34 +184,41 @@ new Command
     }
 );
 
-// set
+// startgame
 new Command
 (
-    "set",
-    "Sets a global setting\n" +
-    "Settings:\n" +
-    Object.keys (config.settings).map ((f) => "  " + f).join (`\n`) + `\n` +
-    "Usage:\n" +
-    "  set <setting> <value>",
+    "startgame",
+    "If a game is not currently active, being set up, or in the post-game phase, start one.",
     (args) => {
-        if (args.length < 2)
+        if (!game.gameIsActive ())
         {
-            console.error ("Format: set <setting> <value>");
-        }
-        else if (!config.settings.hasOwnProperty (args[0]))
-        {
-            console.error (`No such setting: ${args[0]}`);
-        }
-        else if (isNaN (args[1]))
-        {
-            console.error (`${args[1]} is not a number.`);
+            console.log ("Game started");
+            startPregame ();
         }
         else
         {
-            config.settings[args[0]] = parseInt (args[1]);
-            config.saveSettings ();
-            console.log (`Set value of ${args[0]} to ${args[1]}.`);
+            console.log ("A game is already running");
         }
+
+    }
+);
+
+// stopgame
+new Command
+(
+    "stopgame",
+    "If a game is currently active, being set up, or in the post-game phase, stop it.",
+    (args) => {
+        if (game.gameIsActive ())
+        {
+            console.log ("Game stopped");
+            stopGame ();
+        }
+        else
+        {
+            console.log ("No game is running");
+        }
+
     }
 );
 

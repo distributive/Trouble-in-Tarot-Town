@@ -77,22 +77,12 @@ function onConnect (socket, address)
 
     // In case they are a returning user
     user.resendMessageLog ();
+    user.sendClientData ();
 
     // Detect if they're already playing (reconnection)
     if (user.name != "")
     {
         socket.emit ("alreadyJoined");
-        socket.emit ("setPlayers", game.getOtherPublicPlayerData (user), true, game.gameIsActive ());
-        socket.emit ("setFaction", (user.isDead) ? "dead" : game.factionToString (user.faction));
-        socket.emit ("setName", user.name);
-        socket.emit ("setCards", user.getCards ());
-        socket.emit ("revealMultipleDead", user.getKnownDead ().map (u => {return {name: u.name, isDead: true};}));
-
-        if (user.team == Team.TRAITOR)
-        {
-            let otherTraitors = game.getPlayersOfTeam (Team.TRAITOR).filter (u => u != user).map (u => u.name);
-            socket.emit ("revealTraitors", otherTraitors);
-        }
 
         // Inform other users you have reconencted
         game.messageAllOtherUsers (user, createMessage (null, `${user.name} has reconnected.`, "server"));
@@ -100,20 +90,14 @@ function onConnect (socket, address)
         // If enough players are online, start a game
         if (!game.gameIsActive () && game.getNonSpectatingUsers ().length >= config.settings.MINIMUM_PLAYER_COUNT)
         {
-            game.startPregame ();
-            game.messageAllUsers (createMessage (null, "New game", "header"));
-            game.messageAllUsers (createMessage (null, `A game will begin in ${config.settings.PRE_GAME_TIME} seconds.`));
-            setTimeout (() => {startGame ();}, config.settings.PRE_GAME_TIME * 1000);
+            startPregame ();
         }
     }
     else
     {
         socket.emit ("requestJoin");
-        socket.emit ("setPlayers", game.getOtherPublicPlayerData (user), false, game.gameIsActive ());
 
-        // Reset these in case the server was reset but the client didn't refresh
-        socket.emit ("setFaction", "spectator");
-        socket.emit ("setCards", user.getCards ());
+        // Reset this in case the server was reset but the client didn't refresh
         socket.emit ("setTurnCountdown", -1);
     }
 
@@ -155,10 +139,7 @@ function onConnect (socket, address)
             // If enough players are online, start a game
             if (!game.gameIsActive () && game.getNonSpectatingUsers ().length >= config.settings.MINIMUM_PLAYER_COUNT)
             {
-                game.startPregame ();
-                game.messageAllUsers (createMessage (null, "New game", "header"));
-                game.messageAllUsers (createMessage (null, `A game will begin in ${config.settings.PRE_GAME_TIME} seconds.`));
-                setTimeout (() => {startGame ();}, config.settings.PRE_GAME_TIME * 1000);
+                startPregame ();
             }
         }
     });
@@ -181,10 +162,39 @@ function onConnect (socket, address)
     });
 }
 
+let turnCountdown, gameCountdown;
+
+export function stopGame (): void // Exports so commands.ts can call it
+{
+    // Stop game loop
+    clearTimeout (turnCountdown);
+    clearTimeout (gameCountdown);
+
+    // Reset game state
+    game.stopGame ();
+
+    // Update client data
+    game.getAllUsers ().forEach (user => {
+        user.sendClientData ();
+    });
+    io.emit ("setTurnCountdown", -1);
+
+    // Inform all users
+    game.messageAllUsers (createMessage (null, "The game was cancelled.", "server"));
+}
+
+export function startPregame (): void // Exports so commands.ts can call it
+{
+    game.startPregame ();
+    game.messageAllUsers (createMessage (null, "New game", "header"));
+    game.messageAllUsers (createMessage (null, `A game will begin in ${config.settings.PRE_GAME_TIME} seconds.`));
+    setTimeout (() => {startGame ();}, config.settings.PRE_GAME_TIME * 1000);
+}
+
 function startGame (): void
 {
-    // Check a game is not already running
-    if (game.gameIsInProgress ())
+    // Check a game is not already running, and that it was in pregame
+    if (game.gameIsInProgress () || !game.gameIsActive ())
         return;
 
     // Check a game is viable
@@ -201,32 +211,22 @@ function startGame (): void
     io.emit ("startGame");
     game.messageAllUsers (createMessage (null, "A game has begun!", "header"));
 
-    // Set current player set for each player
-    game.getPlayers ().forEach (user => {
-        if (!user.isBot)
+    // Resend client data for each player
+    game.getPlayers ().filter (user => !user.isBot).forEach (user => {
+        user.sendClientData ();
+        user.message (createMessage (null, game.getFactionWinCon (user.faction)));
+
+        // Inform traitors of their allies
+        if (user.team == Team.TRAITOR)
         {
-            // Ensure the correct player list displays for all players
-            user.emit ("setPlayers", game.getOtherPublicPlayerData (user), true, game.gameIsActive ());
+            let otherTraitors = game.getPlayersOfTeam (Team.TRAITOR).filter (u => u != user).map (u => u.name);
 
-            // Set up start of game UI
-            user.emit ("setCards", user.getCards ());
-            user.emit ("setFaction", game.factionToString (user.faction));
-            user.message (createMessage (null, game.getFactionWinCon (user.faction)));
-
-            // Inform traitors of their allies
-            if (user.team == Team.TRAITOR)
-            {
-                let otherTraitors = game.getPlayersOfTeam (Team.TRAITOR).filter (u => u != user).map (u => u.name);
-
-                user.emit ("revealTraitors", otherTraitors);
-
-                if (otherTraitors.length == 0)
-                    user.message (createMessage (null, "You are the only traitor."));
-                else if (otherTraitors.length == 1)
-                    user.message (createMessage (null, `Your fellow traitor is ${util.formatList (otherTraitors)}.`));
-                else
-                    user.message (createMessage (null, `Your fellow traitors are ${util.formatList (otherTraitors)}.`));
-            }
+            if (otherTraitors.length == 0)
+                user.message (createMessage (null, "You are the only traitor."));
+            else if (otherTraitors.length == 1)
+                user.message (createMessage (null, `Your fellow traitor is ${util.formatList (otherTraitors)}.`));
+            else
+                user.message (createMessage (null, `Your fellow traitors are ${util.formatList (otherTraitors)}.`));
         }
     });
 
@@ -247,7 +247,7 @@ function runTurn (): void
     });
 
     let timeLeftInTurn: number = config.settings.TURN_TIME_LIMIT;
-    let turnCountdown = setInterval (() => {
+    turnCountdown = setInterval (() => {
         io.emit ("setTurnCountdown", timeLeftInTurn);
         timeLeftInTurn--;
 
@@ -356,7 +356,7 @@ function runTurn (): void
                 game.messageAllUsers (createMessage (null, "A new game will begin shortly."));
 
                 let timeLeftUntilNewGame = config.settings.POST_GAME_TIME;
-                let gameCountdown = setInterval (() => {
+                gameCountdown = setInterval (() => {
                     io.emit ("setTurnCountdown", timeLeftUntilNewGame);
                     timeLeftUntilNewGame--;
 
@@ -368,7 +368,8 @@ function runTurn (): void
                         io.emit ("setTurnCountdown", -1);
 
                         // Start next game
-                        startGame ();
+                        if (game.gameIsActive ())
+                            startGame ();
                     }
                 }, 1000);
             }

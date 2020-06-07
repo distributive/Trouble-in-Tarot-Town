@@ -130,6 +130,20 @@ export class User
 
         this._socket.emit (flag, ...content);
     }
+    sendClientData (): void
+    {
+        this.emit ("setName", this._name);
+        this.emit ("setPlayers", getOtherPublicPlayerData (this), this._team != Team.SPECTATOR, gameIsActive ());
+        this.emit ("setFaction", (this._dead) ? "dead" : factionToString (this._faction));
+        this.emit ("setCards", this.getCards ());
+        this.emit ("revealMultipleDead", this._knownDead.map (u => {return {name: u.name, isDead: true};}));
+
+        if (this._team == Team.TRAITOR)
+        {
+            let otherTraitors = getPlayersOfTeam (Team.TRAITOR).filter (user => user != this).map (user => user.name);
+            this.emit ("revealTraitors", otherTraitors);
+        }
+    }
 
     message (message: Message, storeInLog: boolean = true): void
     {
@@ -533,7 +547,7 @@ export function stopGame (): void
 {
     gameState = GameState.NO_GAME;
 
-    getNonSpectatingUsers ().forEach (user => {
+    getPlayers ().forEach (user => {
         user.reset ();
     });
 }
