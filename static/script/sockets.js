@@ -85,6 +85,8 @@ socket.on ("setIsDead", (isDead) => {
     {
         setIcon ("dead");
         displayKilled ();
+
+        playSFX ("gameDeath");
     }
 })
 
