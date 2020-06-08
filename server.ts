@@ -129,8 +129,8 @@ function onConnect (socket, address)
             socket.emit ("setName", name);
 
             // Update player list for all players
-            game.getPlayers ().forEach (u => {
-                user.emit ("setPlayers", game.getOtherPublicPlayerData (u), true, game.gameIsActive ());
+            game.getAllUsers ().forEach (u => {
+                user.emit ("setPlayers", game.getOtherPublicPlayerData (u), user.team != Team.SPECTATOR, game.gameIsActive ());
             });
 
             // Inform other players you have joined

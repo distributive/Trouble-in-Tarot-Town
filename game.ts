@@ -283,21 +283,11 @@ export function getOtherPlayerNames (user: User): Array<string>
 
 export function getPublicPlayerData (): Array<object> // returns name and whether they're a spectator for each player
 {
-    let results = getPlayers ().map (user => user.publicData);
-
-    if (results.length == 0)
-        results = getAllUsers ().map (user => user.publicData);
-
-    return results;
+    return getAllUsers ().map (user => user.publicData);
 }
 export function getOtherPublicPlayerData (user: User): Array<object>
 {
-    let results = getPlayers ().filter (u => u != null && u.address != user.address).map (u => u.publicData);
-
-    if (results.length == 0)
-        results = getAllUsers ().filter (u => u != null && u.address != user.address).map (user => user.publicData);
-
-    return results;
+    return getAllUsers ().filter (u => u != null && u.address != user.address).map (u => u.publicData);
 }
 
 export function thereExistsPlayerWithName (name: string): boolean
