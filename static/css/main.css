@@ -286,14 +286,6 @@ body {
     display: block;
     width: 100%;
 }
-.card .bg-art {
-    position: absolute;
-
-    top: 0;
-    left: 0;
-
-    width: 100%;
-}
 
 #hand .card {
     border-radius: 1.56em;
@@ -443,6 +435,9 @@ body {
 }
 #player-container .player .background .icon.traitor {
     background-color: var(--color-bad-alt);
+}
+#player-container .player .background .icon.detective {
+    background-color: var(--color-detective);
 }
 
 #player-container .player.dead .tag {
