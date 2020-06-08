@@ -131,6 +131,10 @@ body {
 b {
     font-weight: bold;
 }
+
+img {
+    pointer-events: none;
+}
 /* BASE END */
 
 

@@ -2,7 +2,7 @@
 let playerTempl = `
 <div class="player">
     <div class="background">
-        <img class="icon" src="static/img/icon/unknown.png" draggable="false" />
+        <img class="icon" src="static/img/icon/unknown.png" />
     </div>
     <div class="tag">
         <p>@name</p>
@@ -11,14 +11,14 @@ let playerTempl = `
 
 let cardTempl = `
 <div class="card">
-    <img class="bg" src="@bg" onerror="this.src = 'static/img/card/placeholder.png';" draggable="false" />
+    <img class="bg" src="@bg" onerror="this.src = 'static/img/card/placeholder.png';" />
     <div class="title-box">
         <h1>@title</h1>
-        <img src="static/img/card/titleBox.png" draggable="false" />
+        <img src="static/img/card/titleBox.png" />
     </div>
     <div class="text-box">
         <span>@description</span>
-        <img src="static/img/card/textBox.png" draggable="false" />
+        <img src="static/img/card/textBox.png" />
     </div>
 </div>`;
 

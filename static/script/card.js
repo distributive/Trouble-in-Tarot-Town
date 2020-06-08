@@ -9,7 +9,7 @@ const CARD_WIDTH_SELECTED = 14;
 
 function createCardHTML (cardInfo)
 {
-    let bg = `static/img/card/bg/${cardInfo.title.toLowerCase ()}.png`;
+    let bg = `static/img/card/bg/${cardInfo.title.toLowerCase ().replace (/ /g, "-")}.png`;
 
     return cardTempl.replace ("@title", cardInfo.title).replace ("@description", cardInfo.description).replace ("@bg", bg);
 }
