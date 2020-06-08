@@ -142,7 +142,7 @@ new Command
         }
         else
         {
-            config.settings[args[0]] = parseInt (args[1]);
+            config.settings[args[0]] = parseFloat (args[1]);
             config.saveSettings ();
             console.log (`Set value of ${args[0]} to ${args[1]}.`);
         }
