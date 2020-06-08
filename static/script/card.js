@@ -121,7 +121,7 @@ function CardObject (jQueryRef, cardInfo)
     {
         let [x, y] = playerToCardSpace (playerObject.getPosition ());
         this.setPos (x, y, animated);
-        this.setRot (0);
+        this.setRot (playerObject.getAngle () - 90);
         this.setWidth (0);
 
         setTimeout (() => {this.jQueryRef.remove ();}, 5000);
@@ -129,7 +129,7 @@ function CardObject (jQueryRef, cardInfo)
     this.sendToNoOne = (animated = true) =>
     {
         this.setPos ($(document).width () / 2, $(document).height () / 2, animated);
-        this.setRot (0);
+        this.setRot (180);
         this.setWidth (0);
 
         setTimeout (() => {this.jQueryRef.remove ();}, 5000);

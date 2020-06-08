@@ -53,11 +53,13 @@ function PlayerObject (jQueryRef, name)
     this.team = "spectator";
 
     /* POSITIONING */
+    this.getAngle = () =>
+    {
+        return ((this.index + 1) * ARC_ANGLE) / (players.length + 1) + 90 - ARC_ANGLE / 2;
+    }
     this.getPosition = () =>
     {
-        let angle = ((this.index + 1) * ARC_ANGLE) / (players.length + 1);
-        angle += 90 - ARC_ANGLE / 2;
-        angle *= 0.0174533;
+        let angle = this.getAngle () * 0.0174533;
 
         let x = -ARC_RADIUS * Math.cos (angle);
         let y = ARC_RADIUS * Math.sin (angle);
