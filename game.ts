@@ -134,14 +134,15 @@ export class User
     {
         this.emit ("setName", this._name);
         this.emit ("setPlayers", getOtherPublicPlayerData (this), this._team != Team.SPECTATOR, gameIsActive ());
-        this.emit ("setFaction", (this._dead) ? "dead" : factionToString (this._faction));
+        this.emit ("setFaction", (this._dead) ? "dead" : this._faction);
         this.emit ("setCards", this.getCards ());
         this.emit ("revealMultipleDead", this._knownDead.map (u => {return {name: u.name, isDead: true};}));
 
         if (this._team == Team.TRAITOR)
         {
-            let otherTraitors = getPlayersOfTeam (Team.TRAITOR).filter (user => user != this).map (user => user.name);
-            this.emit ("revealTraitors", otherTraitors);
+            let otherTraitors = getPlayersOfTeam (Team.TRAITOR).filter (u => u != this);
+            this.emit ("revealTeams", otherTraitors.map (u => {return {"name": u.name, "team": u.team};}));
+            this.emit ("revealFactions", otherTraitors.map (u => {return {"name": u.name, "faction": u.faction};}));
         }
     }
 
@@ -378,25 +379,6 @@ export function messageAllPlayersOfFaction (faction: Faction, message: Message, 
 
 
 /* TEXT */
-export function factionToString (faction: Faction): string
-{
-    switch (faction)
-    {
-        case Faction.NONE:
-        case Faction.SPECTATOR:
-            return "spectator";
-
-        case Faction.INNOCENT:
-            return "innocent";
-
-        case Faction.TRAITOR:
-            return "traitor";
-
-        case Faction.DETECTIVE:
-            return "detective";
-    }
-}
-
 export function getFactionWinCon (faction: Faction): string
 {
     if (faction == Faction.INNOCENT)

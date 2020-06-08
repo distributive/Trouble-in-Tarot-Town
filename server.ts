@@ -343,10 +343,12 @@ function runTurn (): void
                 }
 
                 // Reveal all information
-                let factionInfo = game.getPlayers ().map (user => {return {"name": user.name, "faction": game.factionToString (user.faction)};});
+                let teamInfo = game.getPlayers ().map (user => {return {"name": user.name, "team": user.team};});
+                let factionInfo = game.getPlayers ().map (user => {return {"name": user.name, "faction": user.faction};});
                 let deathInfo = game.getPlayers ().map (user => {return {"name": user.name, "isDead": user.isDead};});
 
                 game.getPlayers ().forEach (user => {
+                    user.emit ("revealTeams", teamInfo);
                     user.emit ("revealFactions", factionInfo);
                     user.emit ("revealMultipleDead", deathInfo);
                 });

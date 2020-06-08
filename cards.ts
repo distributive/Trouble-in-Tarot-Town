@@ -1,7 +1,7 @@
 import * as util from "./util";
 
-export enum Faction { NONE, SPECTATOR, INNOCENT, TRAITOR, DETECTIVE }
-export enum Team { NONE, SPECTATOR, INNOCENT, TRAITOR }
+export enum Faction { NONE = "none", SPECTATOR = "spectator", INNOCENT = "innocent", TRAITOR = "traitor", DETECTIVE = "detective" }
+export enum Team { NONE = "none", SPECTATOR = "spectator", INNOCENT = "innocent", TRAITOR = "traitor" }
 export enum TargetType { UNPLAYABLE = 0, PLAYER, NO_TARGET }
 
 export abstract class ICard

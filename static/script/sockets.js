@@ -88,18 +88,24 @@ socket.on ("setIsDead", (isDead) => {
 
         playSFX ("gameDeath");
     }
-})
-
-socket.on ("revealTraitors", (names) => {
-    revealTraitors (names);
 });
 
-socket.on ("revealFaction", (data) => {
-    revealFactionOf (data.name, data.faction);
+socket.on ("revealTeam", (name, team) => {
+    revealTeamOf (name, team);
+});
+
+socket.on ("revealTeams", (array) => {
+    array.forEach (data => {
+        revealTeamOf (data.name, data.team);
+    });
+});
+
+socket.on ("revealFaction", (name, faction) => {
+    revealFactionOf (name, faction);
 });
 
 socket.on ("revealFactions", (array) => {
-    array.forEach ((data, i) => {
+    array.forEach (data => {
         revealFactionOf (data.name, data.faction);
     });
 });

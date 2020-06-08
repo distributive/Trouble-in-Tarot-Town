@@ -50,6 +50,7 @@ function PlayerObject (jQueryRef, name)
     this.name = name.toLowerCase ();
     this.index = players.length;
     this.faction = "spectator";
+    this.team = "spectator";
 
     /* POSITIONING */
     this.getPosition = () =>
@@ -107,15 +108,15 @@ function PlayerObject (jQueryRef, name)
         }
     };
 
-    this.setFaction = (faction) =>
+    this.setTeam = (team) =>
     {
-        this.faction = faction;
+        this.team = team;
 
         let isInactive = this.jQueryRef.hasClass ("inactive");
         let isDead = this.jQueryRef.hasClass ("dead");
 
         this.jQueryRef.attr ("class", "player");
-        this.jQueryRef.addClass (faction.toLowerCase ());
+        this.jQueryRef.addClass (team.toLowerCase ());
 
         if (isInactive)
             this.jQueryRef.addClass ("inactive");
@@ -123,6 +124,28 @@ function PlayerObject (jQueryRef, name)
             this.jQueryRef.addClass ("dead");
 
         return this;
+    }
+    this.setFaction = (faction) =>
+    {
+        faction = faction.toLowerCase ();
+
+        $.ajax ({
+            url: `static/img/icon/${faction}.png`,
+            type: "HEAD",
+            error: () => {
+                faction = "unknown";
+                this.faction = faction;
+                this.jQueryRef.find (".icon").attr ("src", `static/img/icon/${faction}.png`);
+                this.jQueryRef.find (".icon").attr ("class", "icon");
+                this.jQueryRef.find (".icon").addClass (faction);
+            },
+            success: () => {
+                this.faction = faction;
+                this.jQueryRef.find (".icon").attr ("src", `static/img/icon/${faction}.png`);
+                this.jQueryRef.find (".icon").attr ("class", "icon");
+                this.jQueryRef.find (".icon").addClass (faction);
+            }
+        });
     }
     this.setActive = (isActive) =>
     {
@@ -150,11 +173,12 @@ function positionPlayers ()
     }
 }
 
-function revealTraitors (names)
+function revealTeamOf (name, team)
 {
-    names.forEach((name, i) => {
-        getPlayerWithName (name).setFaction ("traitor");
-    });
+    let player = getPlayerWithName (name);
+
+    if (player)
+        player.setTeam (team);
 }
 
 function revealFactionOf (name, faction)
