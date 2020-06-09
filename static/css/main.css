@@ -10,6 +10,8 @@
     --color-dark: #000001;
     --color-grey: #afafaf;
 
+    --color-shadow: #00000011;
+
     --color-important: #ff0700;
     --color-highlight: #8d753d;
     --color-info: #45046a;
@@ -224,6 +226,8 @@ body {
     font-size: 0.8vw;
     color: var(--card-text);
 
+    border-radius: 1.56em;
+
     -webkit-touch-callout: none;
       -webkit-user-select: none;
        -khtml-user-select: none;
@@ -289,14 +293,27 @@ body {
 .card .bg {
     display: block;
     width: 100%;
+    border-radius: inherit;
+}
+
+.card .fg {
+    position: absolute;
+
+    bottom: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
 }
 
 #hand .card {
-    border-radius: 1.56em;
     box-shadow: 0 0 1vw var(--color-sec);
 }
 #hand .card:hover {
     box-shadow: 0 0 2vw var(--card-hover-glow);
+}
+#hand .card .bg {
+    box-shadow: -0.5vw 0.5vw 0 var(--color-shadow);
 }
 
 .card.moving {

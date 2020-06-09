@@ -12,6 +12,7 @@ let playerTempl = `
 let cardTempl = `
 <div class="card">
     <img class="bg" src="@bg" onerror="this.src = 'static/img/card/placeholder.png';" />
+    <img class="fg" src="static/img/card/3d.png" />
     <div class="title-box">
         <h1>@title</h1>
         <img src="static/img/card/titleBox.png" />

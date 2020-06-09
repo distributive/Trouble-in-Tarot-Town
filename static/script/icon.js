@@ -39,6 +39,6 @@ function animateIcon (img)
         $("#player-faction").css ("width", "100%");
         $("#player-faction div").css ("opacity", 0);
 
-        setTimeout (() => {$("#player-faction").attr ("class", "");}, 1000);
-    }, 1000);
+        setTimeout (() => {$("#player-faction").attr ("class", "");}, 1010);
+    }, 1010);
 }
