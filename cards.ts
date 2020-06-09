@@ -118,7 +118,7 @@ const playDeadDescription: string = "Target a player and falsely inform them you
 const playDeadTargetted: TargetType = TargetType.PLAYER;
 
 export const jailTitle: string = "Jail";
-const jailDescription: string = "Target a player. Cancel their actions this turn; they do not visit anyone. Ineffective against other 'jail' cards.";
+const jailDescription: string = "Target a player. Cancel their action; they do not visit anyone. Ineffective against other 'jail' cards.";
 const jailTargetted: TargetType = TargetType.PLAYER;
 
 
