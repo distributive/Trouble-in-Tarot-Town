@@ -11,8 +11,14 @@ interface Settings
     // Faction variables
     TRAITOR_CONSTANT: number;
     TRAITOR_FRACTION: number;
+
     DETECTIVE_CONSTANT: number;
     DETECTIVE_FRACTION: number;
+
+    ANARCHIST_THRESHOLD: number;
+    ANARCHIST_PROBABILITY: number;
+    JESTER_ENABLED: number;
+    SK_ENABLED: number;
 }
 
 export let settings: Settings = {
@@ -23,8 +29,14 @@ export let settings: Settings = {
 
     TRAITOR_CONSTANT: 0,
     TRAITOR_FRACTION: 0,
+
     DETECTIVE_CONSTANT: 0,
-    DETECTIVE_FRACTION: 0
+    DETECTIVE_FRACTION: 0,
+
+    ANARCHIST_THRESHOLD: 0,
+    ANARCHIST_PROBABILITY: 0,
+    JESTER_ENABLED: 0,
+    SK_ENABLED: 0
 };
 let defaultSettings: Settings = {
     MINIMUM_PLAYER_COUNT: 3,
@@ -34,8 +46,14 @@ let defaultSettings: Settings = {
 
     TRAITOR_CONSTANT: -2/3,
     TRAITOR_FRACTION: 1/3,
+
     DETECTIVE_CONSTANT: 0,
-    DETECTIVE_FRACTION: 0.1
+    DETECTIVE_FRACTION: 0.1,
+
+    ANARCHIST_THRESHOLD: 6,
+    ANARCHIST_PROBABILITY: 0.5,
+    JESTER_ENABLED: 1,
+    SK_ENABLED: 1
 };
 
 // Load in settings from file

@@ -23,10 +23,16 @@
     --color-good-alt: #0b88a4;
     --color-bad: #e30000;
     --color-bad-alt: #b70000;
-    --color-jester: #df7ab3;
-    --color-jester-alt: #ce5398;
 
     --color-detective: #7020bc;
+
+    --color-anarchist: #df7ab3;
+    --color-anarchist-alt: #ce5398;
+
+    --color-jester: #ff00d8;
+    --color-jester-alt: #c500a7;
+    --color-sk: #2d0019;
+    --color-sk-alt: #230013;
 
 
 
@@ -159,8 +165,8 @@ body {
 .detective {
     color: var(--color-detective);
 }
-.jester {
-    color: var(--color-jester);
+.anarchist {
+    color: var(--color-anarchist);
 }
 /* TEXT EFFECTS END */
 
@@ -451,8 +457,8 @@ body {
 #player-container .player.traitor .background {
     background-color: var(--color-bad);
 }
-#player-container .player.jester .background {
-    background-color: var(--color-jester-alt);
+#player-container .player.anarchist .background {
+    background-color: var(--color-anarchist);
 }
 
 #player-container .player .background .icon.innocent {
@@ -463,6 +469,12 @@ body {
 }
 #player-container .player .background .icon.detective {
     background-color: var(--color-detective);
+}
+#player-container .player .background .icon.jester {
+    background-color: var(--color-jester-alt);
+}
+#player-container .player .background .icon.serial-killer {
+    background-color: var(--color-sk);
 }
 
 #player-container .player.dead .tag {

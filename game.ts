@@ -7,7 +7,8 @@ import * as config from "./config";
 
 export type Address = string;
 
-export enum WinCondition { NONE, DRAW, INNOCENT, TRAITOR }
+export enum Effect { KILLED_BY_KILL }
+export enum WinCondition { NONE, DRAW, INNOCENT, TRAITOR, JESTER, SK }
 
 
 
@@ -16,6 +17,8 @@ let users: Record<Address, User> = {};
 let innocentDeck: Array<Card> = [];
 let traitorDeck: Array<Card> = [];
 let detectiveDeck: Array<Card> = [];
+let jesterDeck: Array<Card> = [];
+let skDeck: Array<Card> = [];
 
 
 
@@ -48,6 +51,7 @@ export class User
     private _messages: Array<Message>;
     private _knownDead: Array<User>;
     private _inGame: boolean;
+    private _effects: Array<Effect>;
 
     constructor (address, socket)
     {
@@ -62,6 +66,7 @@ export class User
         this._messages = [];
         this._knownDead = [];
         this._inGame = false;
+        this._effects = [];
     }
 
     get address (): Address {return this._address;}
@@ -97,6 +102,7 @@ export class User
         this._messages = [];
         this._knownDead = [];
         this._inGame = false;
+        this._effects = [];
     }
 
     connect (socket: any): void
@@ -143,6 +149,9 @@ export class User
             let otherTraitors = getPlayersOfTeam (Team.TRAITOR).filter (u => u != this);
             this.emit ("revealTeams", otherTraitors.map (u => {return {"name": u.name, "team": u.team};}));
             this.emit ("revealFactions", otherTraitors.map (u => {return {"name": u.name, "faction": u.faction};}));
+
+            let anarchists = getPlayersOfTeam (Team.ANARCHIST);
+            this.emit ("revealTeams", anarchists.map (u => {return {"name": u.name, "team": u.team};}));
         }
     }
 
@@ -208,13 +217,28 @@ export class User
     hasWon (winState: WinCondition): boolean
     {
         return this._team == Team.INNOCENT && winState == WinCondition.INNOCENT ||
-               this._team == Team.TRAITOR  && winState == WinCondition.TRAITOR
+               this._team == Team.TRAITOR  && winState == WinCondition.TRAITOR  ||
+               this._faction == Faction.JESTER && winState == WinCondition.JESTER ||
+               this._faction == Faction.SK     && winState == WinCondition.SK
     }
 
     dump (): string
     {
         return this._address + "\n" +
                this._name + "\n";
+    }
+
+    applyEffect (effect: Effect): void
+    {
+        this._effects.push (effect);
+    }
+    hasEffect (effect: Effect): boolean
+    {
+        return this._effects.includes (effect);
+    }
+    clearEffects (): void
+    {
+        this._effects = [];
     }
 }
 
@@ -387,6 +411,10 @@ export function getFactionWinCon (faction: Faction): string
         return "You are a traitor. Kill all non-traitors to win.";
     if (faction == Faction.DETECTIVE)
         return "You are a detective. Kill all traitors to win.";
+    if (faction == Faction.JESTER)
+        return "You are a jester. Be killed by a 'kill' card to win.";
+    if (faction == Faction.SK)
+        return "You are a serial killer. Kill all other players to win.";
 }
 /* TEXT END */
 
@@ -490,9 +518,33 @@ export function startGame (): void
 
     let traitorCount = Math.ceil (config.settings.TRAITOR_FRACTION * allPlayers.length + config.settings.TRAITOR_CONSTANT);
     let detectiveCount = Math.floor (config.settings.DETECTIVE_FRACTION * allPlayers.length + config.settings.DETECTIVE_CONSTANT);
-    let innocentCount = Math.max (0, allPlayers.length - traitorCount - detectiveCount);
 
-    let roleDeck = cards.generateRoleDeck (innocentCount, traitorCount, detectiveCount);
+    let jesterCount = 0, skCount = 0;
+    if (config.settings.ANARCHIST_THRESHOLD <= allPlayers.length && Math.random () < config.settings.ANARCHIST_PROBABILITY)
+    {
+        let anarchists: Array<Faction> = [];
+        if (config.settings.JESTER_ENABLED)
+            anarchists.push (Faction.JESTER);
+        if (config.settings.SK_ENABLED)
+            anarchists.push (Faction.SK);
+
+        let anarchist = util.choose (anarchists);
+
+        switch (anarchist)
+        {
+            case Faction.JESTER:
+                jesterCount = 1;
+            break;
+
+            case Faction.SK:
+                skCount = 1;
+            break;
+        }
+    }
+
+    let innocentCount = Math.max (0, allPlayers.length - traitorCount - detectiveCount - jesterCount - skCount);
+
+    let roleDeck = cards.generateRoleDeck (innocentCount, traitorCount, detectiveCount, jesterCount, skCount);
 
     allPlayers.forEach (user => {
         let roleCard = roleDeck.pop ();
@@ -718,6 +770,34 @@ export function getResultsOfTurn (): TurnData
                         targetsResult.isDead = true;
                         targetsResult.messages.push (createMessage (null, "You have been killed.", "info"));
                         killed.push (target);
+
+                        target.applyEffect (Effect.KILLED_BY_KILL);
+                    }
+                }
+            break;
+
+            case cards.ambushTitle:
+                if (getPlayers ().filter (user => user != source && moves[user.address].target == target).length > 0)
+                {
+                    result.messages.push (createMessage (null, `Someone else visited ${target.name}.`, "info"));
+                }
+                else
+                {
+                    logDeath (source, target, true);
+
+                    if (targetsResult.isDead)
+                    {
+                        result.messages.push (createMessage (null, `${target.name} is already dead.`, "info"));
+                    }
+                    else
+                    {
+                        result.messages.push (createMessage (null, `Your killed ${target.name}.`, "info"));
+                        logDeath (source, target, true);
+
+                        targetsResult.isDead = true;
+                        targetsResult.messages.push (createMessage (null, "You have been killed.", "info"));
+
+                        killed.push (target);
                     }
                 }
             break;
@@ -788,12 +868,18 @@ export function checkWinConditions (): WinCondition
 {
     let areTowniesAlive = getPlayersOfTeam (Team.INNOCENT).some (user => !user.isDead);
     let areTraitorsAlive = getPlayersOfTeam (Team.TRAITOR).some (user => !user.isDead);
+    let areJestersAlive = getPlayersOfFaction (Faction.JESTER).some (user => !user.isDead);
+    let areSKsAlive = getPlayersOfFaction (Faction.SK).some (user => !user.isDead);
 
-    if (areTowniesAlive && !areTraitorsAlive)
+    if (getPlayersOfFaction (Faction.JESTER).some (user => user.hasEffect (Effect.KILLED_BY_KILL)))
+        return WinCondition.JESTER;
+    else if (areTowniesAlive && !areTraitorsAlive && !areSKsAlive)
         return WinCondition.INNOCENT;
-    else if (areTraitorsAlive && !areTowniesAlive)
+    else if (areTraitorsAlive && !areTowniesAlive && !areSKsAlive)
         return WinCondition.TRAITOR;
-    else if (!areTowniesAlive && !areTraitorsAlive)
+    else if (!areTowniesAlive && !areTraitorsAlive && areSKsAlive)
+        return WinCondition.SK;
+    else if (!areTowniesAlive && !areTraitorsAlive && !areSKsAlive)
         return WinCondition.DRAW;
     else
         return WinCondition.NONE;
@@ -820,6 +906,18 @@ function drawFromFactionDeck (faction: Faction): ICard
         if (detectiveDeck.length <= 0)
             detectiveDeck = cards.generateDetectiveDeck (1);
         return detectiveDeck.pop ();
+    }
+    else if (faction == Faction.JESTER)
+    {
+        if (jesterDeck.length <= 0)
+            jesterDeck = cards.generateJesterDeck (1);
+        return jesterDeck.pop ();
+    }
+    else if (faction == Faction.SK)
+    {
+        if (skDeck.length <= 0)
+            skDeck = cards.generateSkDeck (1);
+        return skDeck.pop ();
     }
 }
 

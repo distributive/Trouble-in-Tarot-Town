@@ -316,13 +316,23 @@ function runTurn (): void
                         game.messageAllUsers (createMessage (null, "The traitors won!"));
                     break;
 
+                    case WinCondition.JESTER:
+                        game.messageAllUsers (createMessage (null, "The jester won!"));
+                    break;
+
+                    case WinCondition.SK:
+                        game.messageAllUsers (createMessage (null, "The serial killer won!"));
+                    break;
+
                     case WinCondition.DRAW:
-                        game.messageAllUsers (createMessage (null, "It was a draw."));
+                        game.messageAllUsers (createMessage (null, "Nobody won."));
                     break;
                 }
 
                 let traitorPlayers = game.getPlayersOfFaction (Faction.TRAITOR).map (u => u.name);
                 let detectivePlayers = game.getPlayersOfFaction (Faction.DETECTIVE).map (u => u.name);
+                let jesterPlayers = game.getPlayersOfFaction (Faction.JESTER).map (u => u.name);
+                let skPlayers = game.getPlayersOfFaction (Faction.SK).map (u => u.name);
 
                 if (traitorPlayers.length == 1)
                 {
@@ -340,6 +350,15 @@ function runTurn (): void
                 else if (detectivePlayers.length > 1)
                 {
                     game.messageAllUsers (createMessage (null, `The detectives were ${util.formatList (detectivePlayers)}.`));
+                }
+
+                if (jesterPlayers.length == 1)
+                {
+                    game.messageAllUsers (createMessage (null, `The jester was ${util.formatList (jesterPlayers)}.`));
+                }
+                if (skPlayers.length == 1)
+                {
+                    game.messageAllUsers (createMessage (null, `The serial killer was ${util.formatList (skPlayers)}.`));
                 }
 
                 // Reveal all information
