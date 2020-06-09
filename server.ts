@@ -7,7 +7,7 @@ const fs = require ("fs");
 import { v4 as uuidv4 } from 'uuid';
 
 import * as game from "./game";
-import {Address, User, Message, createMessage, Move, Result, TurnData, WinCondition} from "./game";
+import {Address, User, Message, createMessage, Move, Result, TurnData, WinCondition, GameState} from "./game";
 import * as cards from "./cards";
 import {ICard, Card, DeadCard, NullCard, RoleCard, Faction, Team, TargetType} from "./cards";
 import * as util from "./util";
@@ -86,6 +86,11 @@ function onConnect (socket, address)
 
         // Inform other users you have reconencted
         game.messageAllOtherUsers (user, createMessage (null, `${user.name} has reconnected.`, "server"));
+
+        if (game.getGameState () == GameState.POST_GAME)
+        {
+            game.revealAllInformationTo (user);
+        }
 
         // If enough players are online, start a game
         if (!game.gameIsActive () && game.getNonSpectatingUsers ().length >= config.settings.MINIMUM_PLAYER_COUNT)
@@ -374,18 +379,11 @@ function runEndGame (winners: WinCondition): void
     }
 
     // Reveal all information
-    let teamInfo = game.getPlayers ().map (user => {return {"name": user.name, "team": user.team};});
-    let factionInfo = game.getPlayers ().map (user => {return {"name": user.name, "faction": user.faction};});
-    let deathInfo = game.getPlayers ().map (user => {return {"name": user.name, "isDead": user.isDead};});
-
-    game.getPlayers ().forEach (user => {
-        user.emit ("revealTeams", teamInfo);
-        user.emit ("revealFactions", factionInfo);
-        user.emit ("revealMultipleDead", deathInfo);
-    });
+    game.revealAllInformation ();
 
 
 
+    // Set up next game
     game.messageAllUsers (createMessage (null, "A new game will begin shortly."));
 
     let timeLeftUntilNewGame = config.settings.POST_GAME_TIME;

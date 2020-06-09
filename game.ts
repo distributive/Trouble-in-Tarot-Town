@@ -362,6 +362,30 @@ export function resetPlayers ()
         user.reset ();
     });
 }
+
+export function revealAllInformationTo (user: User)
+{
+    let teamInfo = getPlayers ().map (user => {return {"name": user.name, "team": user.team};});
+    let factionInfo = getPlayers ().map (user => {return {"name": user.name, "faction": user.faction};});
+    let deathInfo = getPlayers ().map (user => {return {"name": user.name, "isDead": user.isDead};});
+
+    user.emit ("revealTeams", teamInfo);
+    user.emit ("revealFactions", factionInfo);
+    user.emit ("revealMultipleDead", deathInfo);
+}
+
+export function revealAllInformation ()
+{
+    let teamInfo = getPlayers ().map (user => {return {"name": user.name, "team": user.team};});
+    let factionInfo = getPlayers ().map (user => {return {"name": user.name, "faction": user.faction};});
+    let deathInfo = getPlayers ().map (user => {return {"name": user.name, "isDead": user.isDead};});
+
+    getPlayers ().forEach (user => {
+        user.emit ("revealTeams", teamInfo);
+        user.emit ("revealFactions", factionInfo);
+        user.emit ("revealMultipleDead", deathInfo);
+    });
+}
 /* PLAYERS END */
 
 
@@ -424,7 +448,7 @@ export function getFactionWinCon (faction: Faction): string
 
 
 /* GAME LOGIC */
-enum GameState { NO_GAME, PRE_GAME, RUNNING, POST_GAME }
+export enum GameState { NO_GAME, PRE_GAME, RUNNING, POST_GAME }
 let gameState: GameState = GameState.NO_GAME;
 
 let moves: Record<Address, Move> = {};
