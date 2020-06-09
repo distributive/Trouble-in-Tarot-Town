@@ -224,8 +224,11 @@ export class User
 
     dump (): string
     {
-        return this._address + "\n" +
-               this._name + "\n";
+        return `Address: ${this._address}\n` +
+               `Name:    ${this._name}\n` +
+               `Team:    ${this._team}\n` +
+               `Faction: ${this._faction}\n` +
+               `Is dead: ${this._dead}`;
     }
 
     applyEffect (effect: Effect): void
@@ -739,6 +742,7 @@ export function getResultsOfTurn (): TurnData
                         (targetsMove.card.title == cards.killTitle) ? [targetsMove.target] :
                         (targetsMove.card.title == cards.c4Title  ) ? getPlayers ().filter (u => moves[u.address].target == target) :
                         [];
+                    let deadVictims = victims.filter (u => u.isDead);
 
                     // Log deaths
                     if (killers.length > 0)
@@ -750,7 +754,13 @@ export function getResultsOfTurn (): TurnData
                     if (killers.length > 0)
                         result.messages.push (createMessage (null, `${target.name} was killed by ${util.formatList (killers.map (u => u.name))}.`, "info"));
                     if (victims.length > 0)
+                    {
                         result.messages.push (createMessage (null, `${target.name} killed ${util.formatList (victims.map (u => (u == source) ? "you" : u.name))}.`, "info"));
+                    }
+                    if (deadVictims.length > 0)
+                    {
+                        result.messages.push (createMessage (null, `${util.formatList (victims.map (u => (u == source) ? "you" : u.name))} were already dead.`, "info"));
+                    }
                 }
             break;
 
@@ -791,7 +801,7 @@ export function getResultsOfTurn (): TurnData
                     }
                     else
                     {
-                        result.messages.push (createMessage (null, `Your killed ${target.name}.`, "info"));
+                        result.messages.push (createMessage (null, `You killed ${target.name}.`, "info"));
                         logDeath (source, target, true);
 
                         targetsResult.isDead = true;
@@ -819,6 +829,7 @@ export function getResultsOfTurn (): TurnData
                     target.clearHand ();
                     result.messages.push (createMessage (null, `You removed all cards left in ${target.name}'s hand.`, "info"));
                     targetsResult.messages.push (createMessage (null, `Someone removed all cards from your hand.`, "info"));
+                    logDeath (source, target, true);
                 }
                 else
                 {

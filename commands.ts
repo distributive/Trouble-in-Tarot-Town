@@ -232,16 +232,17 @@ new Command
         console.log ("================================================================");
         console.log ();
 
-        console.log ("USERS");
+        console.log ("USERS NAMES/ADDRESSES");
         game.getAllUsers ().forEach (user => {
-            console.log (util.indentString (user.dump (), "  "));
+            console.log (`  ${user.address} / ${user.name}`);
         });
 
         console.log ();
 
-        console.log ("PLAYER ADDRESSES/NAMES");
+        console.log ("PLAYERS");
         game.getPlayers ().forEach (user => {
-            console.log ("  " + user.address + " / " + user.name);
+            console.log (util.indentString (user.dump (), "  "));
+            console.log ();
         });
 
         console.log ();
