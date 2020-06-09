@@ -245,8 +245,6 @@ new Command
             console.log ();
         });
 
-        console.log ();
-
         console.log ("GAME STATE");
         console.log ("  " + game.getGameStateString ());
 
