@@ -297,107 +297,112 @@ function runTurn (): void
 
             if (winners)
             {
-                io.emit ("setCards", []);
-
-                game.endGame ();
-
-                game.messageAllUsers (createMessage (null, "Game over!", "header"));
-                game.getPlayers ().forEach (user => {
-                    user.emit ("endGame", user.hasWon (winners));
-                });
-
-                switch (winners)
-                {
-                    case WinCondition.INNOCENT:
-                        game.messageAllUsers (createMessage (null, "The innocents won!"));
-                    break;
-
-                    case WinCondition.TRAITOR:
-                        game.messageAllUsers (createMessage (null, "The traitors won!"));
-                    break;
-
-                    case WinCondition.JESTER:
-                        game.messageAllUsers (createMessage (null, "The jester won!"));
-                    break;
-
-                    case WinCondition.SK:
-                        game.messageAllUsers (createMessage (null, "The serial killer won!"));
-                    break;
-
-                    case WinCondition.DRAW:
-                        game.messageAllUsers (createMessage (null, "Nobody won."));
-                    break;
-                }
-
-                let traitorPlayers = game.getPlayersOfFaction (Faction.TRAITOR).map (u => u.name);
-                let detectivePlayers = game.getPlayersOfFaction (Faction.DETECTIVE).map (u => u.name);
-                let jesterPlayers = game.getPlayersOfFaction (Faction.JESTER).map (u => u.name);
-                let skPlayers = game.getPlayersOfFaction (Faction.SK).map (u => u.name);
-
-                if (traitorPlayers.length == 1)
-                {
-                    game.messageAllUsers (createMessage (null, `The traitor was ${util.formatList (traitorPlayers)}.`));
-                }
-                else
-                {
-                    game.messageAllUsers (createMessage (null, `The traitors were ${util.formatList (traitorPlayers)}.`));
-                }
-
-                if (detectivePlayers.length == 1)
-                {
-                    game.messageAllUsers (createMessage (null, `The detective was ${util.formatList (detectivePlayers)}.`));
-                }
-                else if (detectivePlayers.length > 1)
-                {
-                    game.messageAllUsers (createMessage (null, `The detectives were ${util.formatList (detectivePlayers)}.`));
-                }
-
-                if (jesterPlayers.length == 1)
-                {
-                    game.messageAllUsers (createMessage (null, `The jester was ${util.formatList (jesterPlayers)}.`));
-                }
-                if (skPlayers.length == 1)
-                {
-                    game.messageAllUsers (createMessage (null, `The serial killer was ${util.formatList (skPlayers)}.`));
-                }
-
-                // Reveal all information
-                let teamInfo = game.getPlayers ().map (user => {return {"name": user.name, "team": user.team};});
-                let factionInfo = game.getPlayers ().map (user => {return {"name": user.name, "faction": user.faction};});
-                let deathInfo = game.getPlayers ().map (user => {return {"name": user.name, "isDead": user.isDead};});
-
-                game.getPlayers ().forEach (user => {
-                    user.emit ("revealTeams", teamInfo);
-                    user.emit ("revealFactions", factionInfo);
-                    user.emit ("revealMultipleDead", deathInfo);
-                });
-
-
-
-                game.messageAllUsers (createMessage (null, "A new game will begin shortly."));
-
-                let timeLeftUntilNewGame = config.settings.POST_GAME_TIME;
-                gameCountdown = setInterval (() => {
-                    io.emit ("setTurnCountdown", timeLeftUntilNewGame);
-                    timeLeftUntilNewGame--;
-
-                    // Exit condition
-                    if (timeLeftUntilNewGame < 0)
-                    {
-                        // End countdown
-                        clearInterval (gameCountdown);
-                        io.emit ("setTurnCountdown", -1);
-
-                        // Start next game
-                        if (game.gameIsActive ())
-                            startGame ();
-                    }
-                }, 1000);
+                setTimeout(() => runEndGame (winners), 1000);
             }
             else
             {
                 runTurn ();
             }
+        }
+    }, 1000);
+}
+
+function runEndGame (winners: WinCondition): void
+{
+    io.emit ("setCards", []);
+
+    game.endGame ();
+
+    game.messageAllUsers (createMessage (null, "Game over!", "header"));
+    game.getPlayers ().forEach (user => {
+        user.emit ("endGame", user.hasWon (winners));
+    });
+
+    switch (winners)
+    {
+        case WinCondition.INNOCENT:
+            game.messageAllUsers (createMessage (null, "The innocents won!"));
+        break;
+
+        case WinCondition.TRAITOR:
+            game.messageAllUsers (createMessage (null, "The traitors won!"));
+        break;
+
+        case WinCondition.JESTER:
+            game.messageAllUsers (createMessage (null, "The jester won!"));
+        break;
+
+        case WinCondition.SK:
+            game.messageAllUsers (createMessage (null, "The serial killer won!"));
+        break;
+
+        case WinCondition.DRAW:
+            game.messageAllUsers (createMessage (null, "Nobody won."));
+        break;
+    }
+
+    let traitorPlayers = game.getPlayersOfFaction (Faction.TRAITOR).map (u => u.name);
+    let detectivePlayers = game.getPlayersOfFaction (Faction.DETECTIVE).map (u => u.name);
+    let jesterPlayers = game.getPlayersOfFaction (Faction.JESTER).map (u => u.name);
+    let skPlayers = game.getPlayersOfFaction (Faction.SK).map (u => u.name);
+
+    if (traitorPlayers.length == 1)
+    {
+        game.messageAllUsers (createMessage (null, `The traitor was ${util.formatList (traitorPlayers)}.`));
+    }
+    else
+    {
+        game.messageAllUsers (createMessage (null, `The traitors were ${util.formatList (traitorPlayers)}.`));
+    }
+
+    if (detectivePlayers.length == 1)
+    {
+        game.messageAllUsers (createMessage (null, `The detective was ${util.formatList (detectivePlayers)}.`));
+    }
+    else if (detectivePlayers.length > 1)
+    {
+        game.messageAllUsers (createMessage (null, `The detectives were ${util.formatList (detectivePlayers)}.`));
+    }
+
+    if (jesterPlayers.length == 1)
+    {
+        game.messageAllUsers (createMessage (null, `The jester was ${util.formatList (jesterPlayers)}.`));
+    }
+    if (skPlayers.length == 1)
+    {
+        game.messageAllUsers (createMessage (null, `The serial killer was ${util.formatList (skPlayers)}.`));
+    }
+
+    // Reveal all information
+    let teamInfo = game.getPlayers ().map (user => {return {"name": user.name, "team": user.team};});
+    let factionInfo = game.getPlayers ().map (user => {return {"name": user.name, "faction": user.faction};});
+    let deathInfo = game.getPlayers ().map (user => {return {"name": user.name, "isDead": user.isDead};});
+
+    game.getPlayers ().forEach (user => {
+        user.emit ("revealTeams", teamInfo);
+        user.emit ("revealFactions", factionInfo);
+        user.emit ("revealMultipleDead", deathInfo);
+    });
+
+
+
+    game.messageAllUsers (createMessage (null, "A new game will begin shortly."));
+
+    let timeLeftUntilNewGame = config.settings.POST_GAME_TIME;
+    gameCountdown = setInterval (() => {
+        io.emit ("setTurnCountdown", timeLeftUntilNewGame);
+        timeLeftUntilNewGame--;
+
+        // Exit condition
+        if (timeLeftUntilNewGame < 0)
+        {
+            // End countdown
+            clearInterval (gameCountdown);
+            io.emit ("setTurnCountdown", -1);
+
+            // Start next game
+            if (game.gameIsActive ())
+                startGame ();
         }
     }, 1000);
 }
